@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
 
 import lombok.AllArgsConstructor;
@@ -29,7 +28,7 @@ public class Pedido {
 	@Id
 	@Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 	
 	@Column(nullable = false)
 	private Instant fecha;
@@ -41,7 +40,7 @@ public class Pedido {
 	@JoinColumn(name = "clie_id", nullable = false)
 	private Cliente cliente;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "espe_id", nullable = false)
 	private EstadoPedido estadoPedido;
 }
