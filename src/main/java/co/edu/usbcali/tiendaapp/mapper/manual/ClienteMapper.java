@@ -2,10 +2,13 @@ package co.edu.usbcali.tiendaapp.mapper.manual;
 
 import co.edu.usbcali.tiendaapp.domain.Cliente;
 import co.edu.usbcali.tiendaapp.dto.ClienteDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClienteMapper {
 
     public static ClienteDTO domainToDto(Cliente cliente) {

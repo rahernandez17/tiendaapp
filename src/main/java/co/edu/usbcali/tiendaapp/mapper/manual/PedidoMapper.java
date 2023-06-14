@@ -2,10 +2,13 @@ package co.edu.usbcali.tiendaapp.mapper.manual;
 
 import co.edu.usbcali.tiendaapp.domain.Pedido;
 import co.edu.usbcali.tiendaapp.dto.PedidoDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PedidoMapper {
 
     public static PedidoDTO domainToDto(Pedido pedido) {

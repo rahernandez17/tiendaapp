@@ -2,9 +2,12 @@ package co.edu.usbcali.tiendaapp.mapper.manual;
 
 import co.edu.usbcali.tiendaapp.domain.TipoDocumento;
 import co.edu.usbcali.tiendaapp.dto.TipoDocumentoDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TipoDocumentoMapper {
 
     public static TipoDocumentoDTO domainToDto(TipoDocumento tipoDocumento) {

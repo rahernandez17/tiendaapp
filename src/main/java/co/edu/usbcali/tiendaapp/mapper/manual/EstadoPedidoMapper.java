@@ -2,9 +2,12 @@ package co.edu.usbcali.tiendaapp.mapper.manual;
 
 import co.edu.usbcali.tiendaapp.domain.EstadoPedido;
 import co.edu.usbcali.tiendaapp.dto.EstadoPedidoDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EstadoPedidoMapper {
 
     public static EstadoPedidoDTO domainToDto(EstadoPedido estadoPedido) {

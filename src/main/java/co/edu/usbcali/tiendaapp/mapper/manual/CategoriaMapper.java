@@ -2,9 +2,12 @@ package co.edu.usbcali.tiendaapp.mapper.manual;
 
 import co.edu.usbcali.tiendaapp.domain.Categoria;
 import co.edu.usbcali.tiendaapp.dto.CategoriaDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CategoriaMapper {
 
     public static CategoriaDTO domainToDto(Categoria categoria) {
