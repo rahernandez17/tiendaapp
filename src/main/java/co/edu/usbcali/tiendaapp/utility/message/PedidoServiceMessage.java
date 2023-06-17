@@ -8,7 +8,7 @@ public class PedidoServiceMessage {
 
     public static final String ID_NO_VALIDO_MSG = "Debe ingresar un id válido";
 
-    public static final String PEDIDO_NO_ENCONTRADA_POR_ID = "No se ha encontrado el pedido con ID %o";
+    public static final String PEDIDO_NO_ENCONTRADA_POR_ID = "No se ha encontrado el pedido con ID {%s}";
 
     public static final String PEDIDO_NULO = "El pedido no puede ser nulo";
 

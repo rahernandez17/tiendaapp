@@ -8,7 +8,7 @@ public class ProductoServiceMessage {
 
     public static final String ID_NO_VALIDO_MSG = "Debe ingresar un id válido";
 
-    public static final String PRODUCTO_NO_ENCONTRADA_POR_ID = "No se ha encontrado el producto con ID %o";
+    public static final String PRODUCTO_NO_ENCONTRADA_POR_ID = "No se ha encontrado el producto con ID {%s}";
 
     public static final String PRODUCTO_NULO = "El producto no puede ser nulo";
 

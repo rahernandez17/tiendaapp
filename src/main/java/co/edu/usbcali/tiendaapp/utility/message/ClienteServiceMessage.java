@@ -8,7 +8,7 @@ public class ClienteServiceMessage {
 
     public static final String ID_NO_VALIDO_MSG = "Debe ingresar un id válido";
 
-    public static final String CLIENTE_NO_ENCONTRADO_POR_ID = "No se ha encontrado el cliente con ID %o";
+    public static final String CLIENTE_NO_ENCONTRADO_POR_ID = "No se ha encontrado el cliente con ID {%s}";
 
     public static final String CLIENTE_NULO = "El cliente no puede ser nulo";
 
@@ -20,7 +20,7 @@ public class ClienteServiceMessage {
 
     public static final String ESTADO_REQUERIDO = "El estado es requerido";
 
-    public static final String ESTADO_SUPERA_LONGITUD = "El estado solo puede tener %o carácter(s)";
+    public static final String ESTADO_SUPERA_LONGITUD = "El estado solo puede tener %s carácter(s)";
 
     public static final String TIPO_DOCUMENTO_ID_REQUERIDO = "El id del tipo de documento es requerido y debe ser positivo";
 

@@ -58,6 +58,10 @@ public class CategoriaServiceImpl implements CategoriaService {
     public CategoriaDTO guardar(CategoriaDTO categoriaDTO) throws CategoriaException {
         validarCategoria(categoriaDTO, false);
 
+        if (Boolean.TRUE.equals(categoriaRepository.existsByNombreIgnoreCase(categoriaDTO.getNombre()))) {
+            throw new CategoriaException(String.format(CategoriaServiceMessage.NOMBRE_EXISTE, categoriaDTO.getNombre()));
+        }
+
         Categoria categoria = categoriaMapper.dtoToDomain(categoriaDTO);
 
         return categoriaMapper.domainToDto(categoriaRepository.save(categoria));
@@ -72,22 +76,27 @@ public class CategoriaServiceImpl implements CategoriaService {
                     .format(CategoriaServiceMessage.CATEGORIA_NO_ENCONTRADA_POR_ID, categoriaDTO.getId()));
         }
 
+        if (Boolean.TRUE.equals(categoriaRepository
+                .existsByIdNotAndNombreIgnoreCase(categoriaDTO.getId(), categoriaDTO.getNombre()))) {
+            throw new CategoriaException(String.format(CategoriaServiceMessage.NOMBRE_EXISTE, categoriaDTO.getNombre()));
+        }
+
         Categoria categoria = categoriaMapper.dtoToDomain(categoriaDTO);
 
         return categoriaMapper.domainToDto(categoriaRepository.save(categoria));
     }
 
-    private void validarCategoria(CategoriaDTO clienteDTO, Boolean esActualizar) throws CategoriaException {
+    private void validarCategoria(CategoriaDTO categoriaDTO, Boolean esActualizar) throws CategoriaException {
         if (Boolean.TRUE.equals(esActualizar)) {
-            ValidacionUtility.isNull(clienteDTO.getId(),
+            ValidacionUtility.isNull(categoriaDTO.getId(),
                     new CategoriaException(CategoriaServiceMessage.ID_REQUERIDO));
         }
 
-        ValidacionUtility.isNull(clienteDTO,
+        ValidacionUtility.isNull(categoriaDTO,
                 new CategoriaException(CategoriaServiceMessage.CATEGORIA_NULA));
-        ValidacionUtility.stringIsNullOrBlank(clienteDTO.getNombre(),
+        ValidacionUtility.stringIsNullOrBlank(categoriaDTO.getNombre(),
                 new CategoriaException(CategoriaServiceMessage.NOMBRE_REQUERIDO));
-        ValidacionUtility.stringIsNullOrBlank(clienteDTO.getDescripcion(),
+        ValidacionUtility.stringIsNullOrBlank(categoriaDTO.getDescripcion(),
                 new CategoriaException(CategoriaServiceMessage.DESCRIPCION_REQUERIDA));
     }
 }
