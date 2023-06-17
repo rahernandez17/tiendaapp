@@ -72,6 +72,11 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
             throws PedidoException, ProductoException, DetallePedidoException {
         validarDetallePedido(detallePedidoDTO, true);
 
+        if (!detallePedidoRepository.existsById(detallePedidoDTO.getId())) {
+            throw new DetallePedidoException(String
+                    .format(DetallePedidoServiceMessage.DETALLE_PEDIDO_NO_ENCONTRADA_POR_ID, detallePedidoDTO.getId()));
+        }
+
         DetallePedido detallePedido = detallePedidoMapper.dtoToDomain(detallePedidoDTO);
         detallePedido.setPedido(pedidoService.buscarPedidoPorId(detallePedidoDTO.getPedidoId()));
         detallePedido.setProducto(productoService.buscarProductoPorId(detallePedidoDTO.getProductoId()));

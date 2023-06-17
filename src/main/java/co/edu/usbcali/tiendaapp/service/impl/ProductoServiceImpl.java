@@ -75,6 +75,11 @@ public class ProductoServiceImpl implements ProductoService {
     public ProductoDTO actualizar(ProductoDTO productoDTO) throws CategoriaException, ProductoException {
         validarProducto(productoDTO, true);
 
+        if (!productoRepository.existsById(productoDTO.getId())) {
+            throw new ProductoException(String
+                    .format(ProductoServiceMessage.PRODUCTO_NO_ENCONTRADA_POR_ID, productoDTO.getId()));
+        }
+
         Producto producto = productoMapper.dtoToDomain(productoDTO);
         producto.setCategoria(categoriaService.buscarCategoriaPorId(productoDTO.getCategoriaId()));
 
@@ -82,7 +87,7 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     private void validarProducto(ProductoDTO productoDTO, Boolean esActualizar) throws ProductoException {
-        if (Boolean.TRUE.equals(esActualizar)){
+        if (Boolean.TRUE.equals(esActualizar)) {
             ValidacionUtility.isNull(productoDTO.getId(),
                     new ProductoException(ProductoServiceMessage.ID_REQUERIDO));
         }

@@ -67,13 +67,18 @@ public class CategoriaServiceImpl implements CategoriaService {
     public CategoriaDTO actualizar(CategoriaDTO categoriaDTO) throws CategoriaException {
         validarCategoria(categoriaDTO, true);
 
+        if (!categoriaRepository.existsById(categoriaDTO.getId())) {
+            throw new CategoriaException(String
+                    .format(CategoriaServiceMessage.CATEGORIA_NO_ENCONTRADA_POR_ID, categoriaDTO.getId()));
+        }
+
         Categoria categoria = categoriaMapper.dtoToDomain(categoriaDTO);
 
         return categoriaMapper.domainToDto(categoriaRepository.save(categoria));
     }
 
     private void validarCategoria(CategoriaDTO clienteDTO, Boolean esActualizar) throws CategoriaException {
-        if (Boolean.TRUE.equals(esActualizar)){
+        if (Boolean.TRUE.equals(esActualizar)) {
             ValidacionUtility.isNull(clienteDTO.getId(),
                     new CategoriaException(CategoriaServiceMessage.ID_REQUERIDO));
         }

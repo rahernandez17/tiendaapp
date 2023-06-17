@@ -75,6 +75,11 @@ public class ClienteServiceImpl implements ClienteService {
     public ClienteDTO actualizar(ClienteDTO clienteDTO) throws ClienteException, TipoDocumentoException {
         validarCliente(clienteDTO, true);
 
+        if (!clienteRepository.existsById(clienteDTO.getId())) {
+            throw new ClienteException(String
+                    .format(ClienteServiceMessage.CLIENTE_NO_ENCONTRADO_POR_ID, clienteDTO.getId()));
+        }
+
         Cliente cliente = clienteMapper.dtoToDomain(clienteDTO);
         cliente.setTipoDocumento(tipoDocumentoService.buscarTipoDocumentoPorId(clienteDTO.getTipoDocumentoId()));
 
@@ -82,7 +87,7 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     private void validarCliente(ClienteDTO clienteDTO, Boolean esActualizar) throws ClienteException {
-        if (Boolean.TRUE.equals(esActualizar)){
+        if (Boolean.TRUE.equals(esActualizar)) {
             ValidacionUtility.isNull(clienteDTO.getId(),
                     new ClienteException(ClienteServiceMessage.ID_REQUERIDO));
         }

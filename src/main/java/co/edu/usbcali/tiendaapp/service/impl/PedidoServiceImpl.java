@@ -79,6 +79,11 @@ public class PedidoServiceImpl implements PedidoService {
     public PedidoDTO actualizar(PedidoDTO pedidoDTO) throws ClienteException, EstadoPedidoException, PedidoException {
         validarPedido(pedidoDTO, true);
 
+        if (!pedidoRepository.existsById(pedidoDTO.getId())) {
+            throw new PedidoException(String
+                    .format(PedidoServiceMessage.PEDIDO_NO_ENCONTRADA_POR_ID, pedidoDTO.getId()));
+        }
+
         Pedido pedido = pedidoMapper.dtoToDomain(pedidoDTO);
         pedido.setCliente(clienteService.buscarClientePorId(pedidoDTO.getClienteId()));
         pedido.setEstadoPedido(estadoPedidoService.buscarEstadoPedidoPorId(pedidoDTO.getEstadoPedidoId()));
