@@ -24,4 +24,6 @@ public class ProductoServiceMessage {
 
     public static final String CATEGORIA_ID_REQUERIDO = "El id de la categoría es requerido y debe ser positivo";
 
+    public static final String ID_REQUERIDO = "Debe ingresar un id para actualizar un registro";
+
 }

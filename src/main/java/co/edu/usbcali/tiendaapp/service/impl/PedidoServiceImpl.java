@@ -88,8 +88,8 @@ public class PedidoServiceImpl implements PedidoService {
 
     private void validarPedido(PedidoDTO pedidoDTO, Boolean esActualizar) throws PedidoException {
         if (Boolean.TRUE.equals(esActualizar)){
-            ValidacionUtility.integerIsNullOrLessZero(pedidoDTO.getId(),
-                    new PedidoException(PedidoServiceMessage.ID_NO_VALIDO_MSG));
+            ValidacionUtility.isNull(pedidoDTO.getId(),
+                    new PedidoException(PedidoServiceMessage.ID_REQUERIDO));
         }
 
         ValidacionUtility.isNull(pedidoDTO,

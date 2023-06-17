@@ -23,4 +23,6 @@ public class ClienteServiceMessage {
     public static final String ESTADO_SUPERA_LONGITUD = "El estado solo puede tener %o carácter(s)";
 
     public static final String TIPO_DOCUMENTO_ID_REQUERIDO = "El id del tipo de documento es requerido y debe ser positivo";
+
+    public static final String ID_REQUERIDO = "Debe ingresar un id para actualizar un registro";
 }

@@ -74,8 +74,8 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     private void validarCategoria(CategoriaDTO clienteDTO, Boolean esActualizar) throws CategoriaException {
         if (Boolean.TRUE.equals(esActualizar)){
-            ValidacionUtility.integerIsNullOrLessZero(clienteDTO.getId(),
-                    new CategoriaException(CategoriaServiceMessage.ID_NO_VALIDO_MSG));
+            ValidacionUtility.isNull(clienteDTO.getId(),
+                    new CategoriaException(CategoriaServiceMessage.ID_REQUERIDO));
         }
 
         ValidacionUtility.isNull(clienteDTO,

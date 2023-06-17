@@ -83,8 +83,8 @@ public class ProductoServiceImpl implements ProductoService {
 
     private void validarProducto(ProductoDTO productoDTO, Boolean esActualizar) throws ProductoException {
         if (Boolean.TRUE.equals(esActualizar)){
-            ValidacionUtility.integerIsNullOrLessZero(productoDTO.getId(),
-                    new ProductoException(ProductoServiceMessage.ID_NO_VALIDO_MSG));
+            ValidacionUtility.isNull(productoDTO.getId(),
+                    new ProductoException(ProductoServiceMessage.ID_REQUERIDO));
         }
 
         ValidacionUtility.isNull(productoDTO,

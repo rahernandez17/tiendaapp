@@ -82,8 +82,8 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
     private void validarDetallePedido(DetallePedidoDTO detallePedidoDTO, Boolean esActualizar)
             throws DetallePedidoException {
         if (Boolean.TRUE.equals(esActualizar)){
-            ValidacionUtility.integerIsNullOrLessZero(detallePedidoDTO.getId(),
-                    new DetallePedidoException(DetallePedidoServiceMessage.ID_NO_VALIDO_MSG));
+            ValidacionUtility.isNull(detallePedidoDTO.getId(),
+                    new DetallePedidoException(DetallePedidoServiceMessage.ID_REQUERIDO));
         }
 
         ValidacionUtility.isNull(detallePedidoDTO,

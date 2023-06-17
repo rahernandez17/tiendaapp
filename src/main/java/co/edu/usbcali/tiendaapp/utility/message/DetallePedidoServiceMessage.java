@@ -20,4 +20,6 @@ public class DetallePedidoServiceMessage {
 
     public static final String PRODUCTO_ID_REQUERIDO = "El id del producto es requerido y debe ser positivo";
 
+    public static final String ID_REQUERIDO = "Debe ingresar un id para actualizar un registro";
+
 }

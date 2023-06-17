@@ -83,8 +83,8 @@ public class ClienteServiceImpl implements ClienteService {
 
     private void validarCliente(ClienteDTO clienteDTO, Boolean esActualizar) throws ClienteException {
         if (Boolean.TRUE.equals(esActualizar)){
-            ValidacionUtility.integerIsNullOrLessZero(clienteDTO.getId(),
-                    new ClienteException(ClienteServiceMessage.ID_NO_VALIDO_MSG));
+            ValidacionUtility.isNull(clienteDTO.getId(),
+                    new ClienteException(ClienteServiceMessage.ID_REQUERIDO));
         }
 
         ValidacionUtility.isNull(clienteDTO,

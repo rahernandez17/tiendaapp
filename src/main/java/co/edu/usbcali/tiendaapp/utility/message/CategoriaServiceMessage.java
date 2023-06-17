@@ -14,4 +14,6 @@ public class CategoriaServiceMessage {
     public static final String NOMBRE_REQUERIDO = "El nombre es requerido";
 
     public static final String DESCRIPCION_REQUERIDA = "La descripción es requerida";
+
+    public static final String ID_REQUERIDO = "Debe ingresar un id para actualizar un registro";
 }

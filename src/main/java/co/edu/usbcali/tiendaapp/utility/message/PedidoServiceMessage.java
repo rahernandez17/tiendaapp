@@ -19,4 +19,6 @@ public class PedidoServiceMessage {
     public static final String CLIENTE_ID_REQUERIDO = "El id del cliente es requerido y debe ser positivo";
 
     public static final String ESTADO_PEDIDO_ID_REQUERIDO = "El id del estado del pedido es requerido y debe ser positivo";
+
+    public static final String ID_REQUERIDO = "Debe ingresar un id para actualizar un registro";
 }
