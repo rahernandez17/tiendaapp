@@ -13,6 +13,7 @@ public interface ProductoMapper {
     @Mapping(source = "categoria.id", target = "categoriaId")
     ProductoDTO domainToDto(Producto producto);
 
+    @Mapping(target = "categoria", ignore = true)
     Producto dtoToDomain(ProductoDTO productoDTO);
 
     List<ProductoDTO> domainToDtoList(List<Producto> productos);

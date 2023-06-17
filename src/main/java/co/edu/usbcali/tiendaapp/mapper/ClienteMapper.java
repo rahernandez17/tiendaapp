@@ -13,6 +13,7 @@ public interface ClienteMapper {
     @Mapping(source = "tipoDocumento.id", target = "tipoDocumentoId")
     ClienteDTO domainToDto(Cliente cliente);
 
+    @Mapping(target = "tipoDocumento", ignore = true)
     Cliente dtoToDomain(ClienteDTO clienteDTO);
 
     List<ClienteDTO> domainToDtoList(List<Cliente> clientes);

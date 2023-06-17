@@ -14,6 +14,8 @@ public interface DetallePedidoMapper {
     @Mapping(source = "producto.id", target = "productoId")
     DetallePedidoDTO domainToDto(DetallePedido detallePedido);
 
+    @Mapping(target = "producto", ignore = true)
+    @Mapping(target = "pedido", ignore = true)
     DetallePedido dtoToDomain(DetallePedidoDTO detallePedidoDTO);
 
     List<DetallePedidoDTO> domainToDtoList(List<DetallePedido> detallesPedidos);
