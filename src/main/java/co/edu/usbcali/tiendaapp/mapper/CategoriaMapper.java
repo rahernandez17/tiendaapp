@@ -1,7 +1,6 @@
 package co.edu.usbcali.tiendaapp.mapper;
 
 import co.edu.usbcali.tiendaapp.domain.Categoria;
-import co.edu.usbcali.tiendaapp.dto.CategoriaDTO;
 import co.edu.usbcali.tiendaapp.request.ActualizaCategoriaRequest;
 import co.edu.usbcali.tiendaapp.request.GuardaCategoriaRequest;
 import co.edu.usbcali.tiendaapp.response.CategoriaResponse;

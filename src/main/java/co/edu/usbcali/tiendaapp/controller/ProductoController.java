@@ -1,9 +1,7 @@
 package co.edu.usbcali.tiendaapp.controller;
 
 import co.edu.usbcali.tiendaapp.exception.CategoriaException;
-import co.edu.usbcali.tiendaapp.exception.ClienteException;
 import co.edu.usbcali.tiendaapp.exception.ProductoException;
-import co.edu.usbcali.tiendaapp.exception.TipoDocumentoException;
 import co.edu.usbcali.tiendaapp.request.ActualizaProductoRequest;
 import co.edu.usbcali.tiendaapp.request.GuardaProductoRequest;
 import co.edu.usbcali.tiendaapp.response.ProductoResponse;
@@ -64,7 +62,7 @@ public class ProductoController {
     )
     public ResponseEntity<SimpleResponse<ProductoResponse>> actualizar(
             @RequestBody @Valid ActualizaProductoRequest actualizaProductoRequest
-    ) throws TipoDocumentoException, ClienteException, ProductoException, CategoriaException {
+    ) throws ProductoException, CategoriaException {
         return new ResponseEntity<>(
                 SimpleResponse.<ProductoResponse>builder()
                         .codigo(HttpStatus.OK.value())
