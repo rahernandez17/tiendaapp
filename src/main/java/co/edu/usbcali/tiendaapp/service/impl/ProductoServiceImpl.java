@@ -1,15 +1,19 @@
 package co.edu.usbcali.tiendaapp.service.impl;
 
 import co.edu.usbcali.tiendaapp.domain.Producto;
-import co.edu.usbcali.tiendaapp.dto.ProductoDTO;
 import co.edu.usbcali.tiendaapp.exception.CategoriaException;
 import co.edu.usbcali.tiendaapp.exception.ProductoException;
 import co.edu.usbcali.tiendaapp.mapper.ProductoMapper;
 import co.edu.usbcali.tiendaapp.repository.ProductoRepository;
+import co.edu.usbcali.tiendaapp.request.ActualizaProductoRequest;
+import co.edu.usbcali.tiendaapp.request.GuardaProductoRequest;
+import co.edu.usbcali.tiendaapp.response.ProductoResponse;
 import co.edu.usbcali.tiendaapp.service.CategoriaService;
 import co.edu.usbcali.tiendaapp.service.ProductoService;
 import co.edu.usbcali.tiendaapp.utility.ValidacionUtility;
 import co.edu.usbcali.tiendaapp.utility.message.ProductoServiceMessage;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,18 +36,18 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public List<ProductoDTO> obtenerTodos() {
-        return productoMapper.domainToDtoList(productoRepository.findAll());
+    public List<ProductoResponse> obtenerTodos() {
+        return productoMapper.domainToResponseList(productoRepository.findAll());
     }
 
     @Override
-    public ProductoDTO buscarPorId(Integer id) throws ProductoException {
+    public ProductoResponse buscarPorId(Integer id) throws ProductoException {
         ValidacionUtility.integerIsNullOrLessZero(id,
                 new ProductoException(ProductoServiceMessage.ID_NO_VALIDO_MSG));
 
         return productoRepository
                 .findById(id)
-                .map(productoMapper::domainToDto)
+                .map(productoMapper::domainToResponse)
                 .orElseThrow(() -> new ProductoException(String
                         .format(ProductoServiceMessage.PRODUCTO_NO_ENCONTRADA_POR_ID, id))
                 );
@@ -62,49 +66,30 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public ProductoDTO guardar(ProductoDTO productoDTO) throws CategoriaException, ProductoException {
-        validarProducto(productoDTO, false);
+    public ProductoResponse guardar(
+            @NotNull(message = ProductoServiceMessage.PRODUCTO_NULO)
+            GuardaProductoRequest guardaProductoRequest
+    ) throws CategoriaException, ProductoException {
+        Producto producto = productoMapper.requestGuardarToDomain(guardaProductoRequest);
 
-        Producto producto = productoMapper.dtoToDomain(productoDTO);
-        producto.setCategoria(categoriaService.buscarCategoriaPorId(productoDTO.getCategoriaId()));
+        producto.setCategoria(categoriaService.buscarCategoriaPorId(guardaProductoRequest.getCategoriaId()));
 
-        return productoMapper.domainToDto(productoRepository.save(producto));
+        return productoMapper.domainToResponse(productoRepository.save(producto));
     }
 
     @Override
-    public ProductoDTO actualizar(ProductoDTO productoDTO) throws CategoriaException, ProductoException {
-        validarProducto(productoDTO, true);
-
-        if (!productoRepository.existsById(productoDTO.getId())) {
+    public ProductoResponse actualizar(
+            @Valid @NotNull(message = ProductoServiceMessage.PRODUCTO_NULO)
+            ActualizaProductoRequest actualizaProductoRequest
+    ) throws CategoriaException, ProductoException {
+        if (!productoRepository.existsById(actualizaProductoRequest.getId())) {
             throw new ProductoException(String
-                    .format(ProductoServiceMessage.PRODUCTO_NO_ENCONTRADA_POR_ID, productoDTO.getId()));
+                    .format(ProductoServiceMessage.PRODUCTO_NO_ENCONTRADA_POR_ID, actualizaProductoRequest.getId()));
         }
 
-        Producto producto = productoMapper.dtoToDomain(productoDTO);
-        producto.setCategoria(categoriaService.buscarCategoriaPorId(productoDTO.getCategoriaId()));
+        Producto producto = productoMapper.requestActualizarToDomain(actualizaProductoRequest);
+        producto.setCategoria(categoriaService.buscarCategoriaPorId(actualizaProductoRequest.getCategoriaId()));
 
-        return productoMapper.domainToDto(productoRepository.save(producto));
-    }
-
-    private void validarProducto(ProductoDTO productoDTO, Boolean esActualizar) throws ProductoException {
-        if (Boolean.TRUE.equals(esActualizar)) {
-            ValidacionUtility.isNull(productoDTO.getId(),
-                    new ProductoException(ProductoServiceMessage.ID_REQUERIDO));
-        }
-
-        ValidacionUtility.isNull(productoDTO,
-                new ProductoException(ProductoServiceMessage.PRODUCTO_NULO));
-        ValidacionUtility.stringIsNullOrBlank(productoDTO.getReferencia(),
-                new ProductoException(ProductoServiceMessage.REFERENCIA_REQUERIDA));
-        ValidacionUtility.stringIsNullOrBlank(productoDTO.getNombre(),
-                new ProductoException(ProductoServiceMessage.NOMBRE_REQUERIDO));
-        ValidacionUtility.stringIsNullOrBlank(productoDTO.getDescripcion(),
-                new ProductoException(ProductoServiceMessage.DESCRIPCION_REQUERIDA));
-        ValidacionUtility.bigDecimalIsNullOrLessZero(productoDTO.getPrecioUnitario(),
-                new ProductoException(ProductoServiceMessage.PRECIO_UNITARIO_REQUERIDO));
-        ValidacionUtility.bigDecimalIsNullOrLessZero(productoDTO.getUnidadesDisponibles(),
-                new ProductoException(ProductoServiceMessage.UNIDADES_DISPONIBLES_REQUERIDO));
-        ValidacionUtility.integerIsNullOrLessZero(productoDTO.getCategoriaId(),
-                new ProductoException(ProductoServiceMessage.CATEGORIA_ID_REQUERIDO));
+        return productoMapper.domainToResponse(productoRepository.save(producto));
     }
 }

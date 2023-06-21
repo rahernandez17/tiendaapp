@@ -1,13 +1,17 @@
 package co.edu.usbcali.tiendaapp.service.impl;
 
 import co.edu.usbcali.tiendaapp.domain.Categoria;
-import co.edu.usbcali.tiendaapp.dto.CategoriaDTO;
 import co.edu.usbcali.tiendaapp.exception.CategoriaException;
 import co.edu.usbcali.tiendaapp.mapper.CategoriaMapper;
 import co.edu.usbcali.tiendaapp.repository.CategoriaRepository;
+import co.edu.usbcali.tiendaapp.request.ActualizaCategoriaRequest;
+import co.edu.usbcali.tiendaapp.request.EliminaCategoriaRequest;
+import co.edu.usbcali.tiendaapp.request.GuardaCategoriaRequest;
+import co.edu.usbcali.tiendaapp.response.CategoriaResponse;
 import co.edu.usbcali.tiendaapp.service.CategoriaService;
 import co.edu.usbcali.tiendaapp.utility.ValidacionUtility;
 import co.edu.usbcali.tiendaapp.utility.message.CategoriaServiceMessage;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,18 +29,18 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
-    public List<CategoriaDTO> obtenerTodos() {
-        return categoriaMapper.domainToDtoList(categoriaRepository.findAll());
+    public List<CategoriaResponse> obtenerTodos() {
+        return categoriaMapper.domainToResponseList(categoriaRepository.findAll());
     }
 
     @Override
-    public CategoriaDTO buscarPorId(Integer id) throws CategoriaException {
+    public CategoriaResponse buscarPorId(Integer id) throws CategoriaException {
         ValidacionUtility.integerIsNullOrLessZero(id,
                 new CategoriaException(CategoriaServiceMessage.ID_NO_VALIDO_MSG));
 
         return categoriaRepository
                 .findById(id)
-                .map(categoriaMapper::domainToDto)
+                .map(categoriaMapper::domainToResponse)
                 .orElseThrow(() -> new CategoriaException(String
                         .format(CategoriaServiceMessage.CATEGORIA_NO_ENCONTRADA_POR_ID, id))
                 );
@@ -55,48 +59,55 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
-    public CategoriaDTO guardar(CategoriaDTO categoriaDTO) throws CategoriaException {
-        validarCategoria(categoriaDTO, false);
-
-        if (Boolean.TRUE.equals(categoriaRepository.existsByNombreIgnoreCase(categoriaDTO.getNombre()))) {
-            throw new CategoriaException(String.format(CategoriaServiceMessage.NOMBRE_EXISTE, categoriaDTO.getNombre()));
+    public CategoriaResponse guardar(
+            @NotNull(message = CategoriaServiceMessage.CATEGORIA_NULA) GuardaCategoriaRequest guardaCategoriaRequest
+    ) throws CategoriaException {
+        if (Boolean.TRUE.equals(categoriaRepository
+                .existsByNombreIgnoreCase(guardaCategoriaRequest.getNombre()))) {
+            throw new CategoriaException(String
+                    .format(CategoriaServiceMessage.NOMBRE_EXISTE, guardaCategoriaRequest.getNombre()));
         }
 
-        Categoria categoria = categoriaMapper.dtoToDomain(categoriaDTO);
+        Categoria categoria = categoriaMapper.guardaCategoriaRequestToDomain(guardaCategoriaRequest);
 
-        return categoriaMapper.domainToDto(categoriaRepository.save(categoria));
+        return categoriaMapper.domainToResponse(categoriaRepository.save(categoria));
     }
 
     @Override
-    public CategoriaDTO actualizar(CategoriaDTO categoriaDTO) throws CategoriaException {
-        validarCategoria(categoriaDTO, true);
-
-        if (!categoriaRepository.existsById(categoriaDTO.getId())) {
+    public CategoriaResponse actualizar(
+            @NotNull(message = CategoriaServiceMessage.CATEGORIA_NULA)
+            ActualizaCategoriaRequest actualizaCategoriaRequest
+    ) throws CategoriaException {
+        if (!categoriaRepository.existsById(actualizaCategoriaRequest.getId())) {
             throw new CategoriaException(String
-                    .format(CategoriaServiceMessage.CATEGORIA_NO_ENCONTRADA_POR_ID, categoriaDTO.getId()));
+                    .format(CategoriaServiceMessage.CATEGORIA_NO_ENCONTRADA_POR_ID, actualizaCategoriaRequest.getId()));
         }
 
         if (Boolean.TRUE.equals(categoriaRepository
-                .existsByIdNotAndNombreIgnoreCase(categoriaDTO.getId(), categoriaDTO.getNombre()))) {
-            throw new CategoriaException(String.format(CategoriaServiceMessage.NOMBRE_EXISTE, categoriaDTO.getNombre()));
+                .existsByIdNotAndNombreIgnoreCase(
+                        actualizaCategoriaRequest.getId(), actualizaCategoriaRequest.getNombre()))
+        ) {
+            throw new CategoriaException(String
+                    .format(CategoriaServiceMessage.NOMBRE_EXISTE, actualizaCategoriaRequest.getNombre()));
         }
 
-        Categoria categoria = categoriaMapper.dtoToDomain(categoriaDTO);
+        Categoria categoria = categoriaMapper.actualizaCategoriaRequestToDomain(actualizaCategoriaRequest);
 
-        return categoriaMapper.domainToDto(categoriaRepository.save(categoria));
+        return categoriaMapper.domainToResponse(categoriaRepository.save(categoria));
     }
 
-    private void validarCategoria(CategoriaDTO categoriaDTO, Boolean esActualizar) throws CategoriaException {
-        if (Boolean.TRUE.equals(esActualizar)) {
-            ValidacionUtility.isNull(categoriaDTO.getId(),
-                    new CategoriaException(CategoriaServiceMessage.ID_REQUERIDO));
+    @Override
+    public void eliminar(
+            @NotNull(message = CategoriaServiceMessage.CATEGORIA_NULA)
+            EliminaCategoriaRequest eliminaCategoriaRequest
+    ) throws CategoriaException {
+        Categoria categoria = buscarCategoriaPorId(eliminaCategoriaRequest.getId());
+
+        if (!categoria.getProductos().isEmpty()) {
+            throw new CategoriaException(String
+                    .format(CategoriaServiceMessage.CATEGORIA_EXISTE_EN_PRODUCTOS, categoria.getNombre()));
         }
 
-        ValidacionUtility.isNull(categoriaDTO,
-                new CategoriaException(CategoriaServiceMessage.CATEGORIA_NULA));
-        ValidacionUtility.stringIsNullOrBlank(categoriaDTO.getNombre(),
-                new CategoriaException(CategoriaServiceMessage.NOMBRE_REQUERIDO));
-        ValidacionUtility.stringIsNullOrBlank(categoriaDTO.getDescripcion(),
-                new CategoriaException(CategoriaServiceMessage.DESCRIPCION_REQUERIDA));
+        categoriaRepository.delete(categoria);
     }
 }

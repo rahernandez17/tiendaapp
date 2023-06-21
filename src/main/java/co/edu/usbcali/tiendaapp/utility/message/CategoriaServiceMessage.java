@@ -16,7 +16,10 @@ public class CategoriaServiceMessage {
 
     public static final String NOMBRE_EXISTE = "Ya existe una categoría con el nombre %s";
 
-    public static final String DESCRIPCION_REQUERIDA = "La descripción es requerida";
+    public static final String NOMBRE_LENGTH = "El nombre debe contener máximo {max} carácteres de longitud";
+
 
     public static final String ID_REQUERIDO = "Debe ingresar un id para actualizar un registro";
+
+    public static final String CATEGORIA_EXISTE_EN_PRODUCTOS = "No se puede eliminar la categoría {%s} porque está asociada a uno o más productos";
 }

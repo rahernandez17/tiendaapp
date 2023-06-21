@@ -14,15 +14,23 @@ public class ProductoServiceMessage {
 
     public static final String REFERENCIA_REQUERIDA = "La referencia es requerida";
 
+    public static final String REFERENCIA_LENGTH = "La referencia debe contener máximo {max} carácteres de lonmgitud";
+
     public static final String NOMBRE_REQUERIDO = "El nombre es requerido";
 
-    public static final String DESCRIPCION_REQUERIDA = "La descripción es requerida";
+    public static final String NOMBRE_LENGTH = "El nombre debe contener máximo {max} carácteres de longitud";
 
-    public static final String PRECIO_UNITARIO_REQUERIDO = "El precio unitario es requerido y debe ser positivo";
+    public static final String PRECIO_UNITARIO_REQUERIDO = "El precio unitario es requerido";
 
-    public static final String UNIDADES_DISPONIBLES_REQUERIDO = "Las unidades disponibles son requeridas y deben ser positivas";
+    public static final String PRECIO_UNITARIO_POSITIVO = "El precio unitario debe ser positivo";
 
-    public static final String CATEGORIA_ID_REQUERIDO = "El id de la categoría es requerido y debe ser positivo";
+    public static final String UNIDADES_DISPONIBLES_REQUERIDO = "Las unidades disponibles son requeridas";
+
+    public static final String UNIDADES_DISPONIBLES_POSITIVO = "Las unidades disponibles deben ser positivas";
+
+    public static final String CATEGORIA_ID_REQUERIDO = "El id de la categoría es requerido";
+
+    public static final String CATEGORIA_ID_POSITIVO = "El id de la categoría debe ser positivo";
 
     public static final String ID_REQUERIDO = "Debe ingresar un id para actualizar un registro";
 

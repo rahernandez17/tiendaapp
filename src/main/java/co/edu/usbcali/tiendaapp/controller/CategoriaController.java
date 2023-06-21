@@ -1,13 +1,17 @@
 package co.edu.usbcali.tiendaapp.controller;
 
-import co.edu.usbcali.tiendaapp.dto.CategoriaDTO;
 import co.edu.usbcali.tiendaapp.exception.CategoriaException;
+import co.edu.usbcali.tiendaapp.request.ActualizaCategoriaRequest;
+import co.edu.usbcali.tiendaapp.request.EliminaCategoriaRequest;
+import co.edu.usbcali.tiendaapp.request.GuardaCategoriaRequest;
+import co.edu.usbcali.tiendaapp.response.CategoriaResponse;
 import co.edu.usbcali.tiendaapp.response.ListSimpleResponse;
 import co.edu.usbcali.tiendaapp.response.SimpleResponse;
 import co.edu.usbcali.tiendaapp.service.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +39,9 @@ public class CategoriaController {
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @GetMapping(value = "/obtener-todos", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ListSimpleResponse<CategoriaDTO>> obtenerTodos() {
+    public ResponseEntity<ListSimpleResponse<CategoriaResponse>> obtenerTodos() {
         return new ResponseEntity<>(
-                ListSimpleResponse.<CategoriaDTO>builder()
+                ListSimpleResponse.<CategoriaResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenidos exitosamente")
                         .valor(categoriaService.obtenerTodos())
@@ -51,10 +55,10 @@ public class CategoriaController {
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @GetMapping(value = "/obtener-por-id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<SimpleResponse<CategoriaDTO>> obtenerPorId(@PathVariable Integer id)
+    public ResponseEntity<SimpleResponse<CategoriaResponse>> obtenerPorId(@PathVariable Integer id)
             throws CategoriaException {
         return new ResponseEntity<>(
-                SimpleResponse.<CategoriaDTO>builder()
+                SimpleResponse.<CategoriaResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenido con éxito")
                         .valor(categoriaService.buscarPorId(id))
@@ -73,10 +77,11 @@ public class CategoriaController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<SimpleResponse<CategoriaDTO>> guardar(@RequestBody CategoriaDTO categoriaDTO)
-            throws CategoriaException {
+    public ResponseEntity<SimpleResponse<CategoriaResponse>> guardar(
+            @RequestBody @Valid GuardaCategoriaRequest categoriaDTO
+    ) throws CategoriaException {
         return new ResponseEntity<>(
-                SimpleResponse.<CategoriaDTO>builder()
+                SimpleResponse.<CategoriaResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Creado con éxito")
                         .valor(categoriaService.guardar(categoriaDTO))
@@ -95,13 +100,32 @@ public class CategoriaController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<SimpleResponse<CategoriaDTO>> actualizar(@RequestBody CategoriaDTO categoriaDTO)
-            throws CategoriaException {
+    public ResponseEntity<SimpleResponse<CategoriaResponse>> actualizar(
+            @RequestBody @Valid ActualizaCategoriaRequest categoriaDTO
+    ) throws CategoriaException {
         return new ResponseEntity<>(
-                SimpleResponse.<CategoriaDTO>builder()
+                SimpleResponse.<CategoriaResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Actualizado con éxito")
                         .valor(categoriaService.actualizar(categoriaDTO))
+                        .build(), HttpStatus.OK);
+    }
+
+    @Operation(
+            operationId = "EliminarPorId",
+            summary = "Eliminar una categoría por id",
+            description = "Eliminar una categoría por id"
+    )
+    @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
+    @DeleteMapping(value = "/eliminar-por-id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<SimpleResponse<Object>> eliminarPorId(
+            @RequestBody @Valid EliminaCategoriaRequest eliminaCategoriaRequest
+    ) throws CategoriaException {
+        categoriaService.eliminar(eliminaCategoriaRequest);
+        return new ResponseEntity<>(
+                SimpleResponse.builder()
+                        .codigo(HttpStatus.OK.value())
+                        .mensaje("Eliminado con éxito")
                         .build(), HttpStatus.OK);
     }
 }
