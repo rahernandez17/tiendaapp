@@ -17,5 +17,8 @@ public class SimpleResponse<T> {
     private String mensaje;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String path;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T valor;
 }
