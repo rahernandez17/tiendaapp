@@ -3,7 +3,6 @@ package co.edu.usbcali.tiendaapp.advice;
 import co.edu.usbcali.tiendaapp.exception.*;
 import co.edu.usbcali.tiendaapp.response.SimpleResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 
 
 @RestControllerAdvice
-@Log4j2
 public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

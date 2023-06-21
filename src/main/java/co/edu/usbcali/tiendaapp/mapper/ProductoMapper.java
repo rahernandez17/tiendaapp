@@ -27,6 +27,7 @@ public interface ProductoMapper {
     Producto requestActualizarToDomain(ActualizaProductoRequest actualizaProductoRequest);
 
     @Mapping(source = "categoria.nombre", target = "nombreCategoria")
+    @Mapping(source = "categoria.id", target = "categoriaId")
     ProductoResponse domainToResponse(Producto producto);
 
     List<ProductoDTO> domainToDtoList(List<Producto> productos);

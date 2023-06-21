@@ -4,6 +4,7 @@ import co.edu.usbcali.tiendaapp.exception.CategoriaException;
 import co.edu.usbcali.tiendaapp.exception.ProductoException;
 import co.edu.usbcali.tiendaapp.request.ActualizaProductoRequest;
 import co.edu.usbcali.tiendaapp.request.GuardaProductoRequest;
+import co.edu.usbcali.tiendaapp.response.ListSimpleResponse;
 import co.edu.usbcali.tiendaapp.response.ProductoResponse;
 import co.edu.usbcali.tiendaapp.response.SimpleResponse;
 import co.edu.usbcali.tiendaapp.service.ProductoService;
@@ -23,6 +24,39 @@ public class ProductoController {
 
     public ProductoController(ProductoService productoService) {
         this.productoService = productoService;
+    }
+
+    @Operation(
+            operationId = "ObtenerTodos",
+            summary = "Obtener todos los productos",
+            description = "Obtener todos los productos"
+    )
+    @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
+    @GetMapping(value = "/obtener-todos", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ListSimpleResponse<ProductoResponse>> obtenerTodos() {
+        return new ResponseEntity<>(
+                ListSimpleResponse.<ProductoResponse>builder()
+                        .codigo(HttpStatus.OK.value())
+                        .mensaje("Obtenidos exitosamente")
+                        .valor(productoService.obtenerTodos())
+                        .build(), HttpStatus.OK);
+    }
+
+    @Operation(
+            operationId = "ObtenerPorId",
+            summary = "Obtener un producto por id",
+            description = "Obtener un producto por id"
+    )
+    @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
+    @GetMapping(value = "/obtener-por-id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<SimpleResponse<ProductoResponse>> obtenerPorId(@PathVariable Integer id)
+            throws ProductoException {
+        return new ResponseEntity<>(
+                SimpleResponse.<ProductoResponse>builder()
+                        .codigo(HttpStatus.OK.value())
+                        .mensaje("Obtenido con éxito")
+                        .valor(productoService.buscarPorId(id))
+                        .build(), HttpStatus.OK);
     }
 
     @Operation(

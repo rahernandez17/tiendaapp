@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @Builder
 public class ProductoResponse {
 
+    private Integer id;
+
     private String referencia;
 
     private String nombre;
@@ -22,6 +24,8 @@ public class ProductoResponse {
     private BigDecimal precioUnitario;
 
     private BigDecimal unidadesDisponibles;
+
+    private Integer categoriaId;
 
     private String nombreCategoria;
 }
