@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,8 +19,11 @@ public class SimpleResponse<T> {
     private String mensaje;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String path;
+    private T valor;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private T valor;
+    private String ruta;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, String> errores;
 }

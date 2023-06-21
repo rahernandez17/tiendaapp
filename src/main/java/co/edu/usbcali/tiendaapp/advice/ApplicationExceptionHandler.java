@@ -2,6 +2,7 @@ package co.edu.usbcali.tiendaapp.advice;
 
 import co.edu.usbcali.tiendaapp.exception.*;
 import co.edu.usbcali.tiendaapp.response.SimpleResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -10,11 +11,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
-
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @RestControllerAdvice
@@ -23,99 +23,102 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public SimpleResponse<Map<String, List<String>>> handleInvalidArgument(
-            MethodArgumentNotValidException ex, WebRequest request
+    public SimpleResponse<Object> handleInvalidArgument(
+            MethodArgumentNotValidException ex, HttpServletRequest request
     ) {
-        List<String> errors = ex.getBindingResult()
-                .getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
-                .toList();
+        Map<String, String> errorMap = ex.getBindingResult().getFieldErrors().stream()
+                .collect(
+                        Collectors.toMap(
+                                FieldError::getField,
+                                item -> Objects.isNull(item.getDefaultMessage()) ? "" : item.getDefaultMessage()
+                        )
+                );
 
-        return SimpleResponse.<Map<String, List<String>>>builder()
+        return SimpleResponse.builder()
                 .codigo(HttpStatus.BAD_REQUEST.value())
-                .mensaje("Error en los datos ingresados")
-                .valor(Map.of("errors", errors))
-                .path(request.getContextPath())
+                .mensaje("Alunos de los campos diligenciados poseen errores")
+                .errores(errorMap)
+                .ruta(request.getContextPath() + request.getServletPath())
                 .build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public SimpleResponse<Object> handleNotReadable(HttpMessageNotReadableException ex, WebRequest request) {
+    public SimpleResponse<Object> handleNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
         return SimpleResponse.builder()
                 .codigo(HttpStatus.BAD_REQUEST.value())
                 .mensaje(ex.getMessage())
-                .path(request.getContextPath())
+                .ruta(request.getContextPath() + request.getServletPath())
                 .build();
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ClienteException.class)
-    public SimpleResponse<Object> clienteException(ClienteException ex, WebRequest request) {
+    public SimpleResponse<Object> clienteException(ClienteException ex, HttpServletRequest request) {
         return SimpleResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
-                .path(request.getContextPath())
+                .ruta(request.getContextPath() + request.getServletPath())
                 .build();
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CategoriaException.class)
-    public SimpleResponse<Object> categoriaException(CategoriaException ex, WebRequest request) {
+    public SimpleResponse<Object> categoriaException(CategoriaException ex, HttpServletRequest request) {
         return SimpleResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
-                .path(request.getContextPath())
+                .ruta(request.getContextPath() + request.getServletPath())
                 .build();
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DetallePedidoException.class)
-    public SimpleResponse<Object> detallePedidoException(DetallePedidoException ex, WebRequest request) {
+    public SimpleResponse<Object> detallePedidoException(DetallePedidoException ex, HttpServletRequest request) {
         return SimpleResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
-                .path(request.getContextPath())
+                .ruta(request.getContextPath() + request.getServletPath())
                 .build();
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(EstadoPedidoException.class)
-    public SimpleResponse<Object> estadoPedidoException(EstadoPedidoException ex, WebRequest request) {
+    public SimpleResponse<Object> estadoPedidoException(EstadoPedidoException ex, HttpServletRequest request) {
         return SimpleResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
-                .path(request.getContextPath())
+                .ruta(request.getContextPath() + request.getServletPath())
                 .build();
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(PedidoException.class)
-    public SimpleResponse<Object> pedidoException(PedidoException ex, WebRequest request) {
+    public SimpleResponse<Object> pedidoException(PedidoException ex, HttpServletRequest request) {
         return SimpleResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
-                .path(request.getContextPath())
+                .ruta(request.getContextPath() + request.getServletPath())
                 .build();
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ProductoException.class)
-    public SimpleResponse<Object> productoException(ProductoException ex, WebRequest request) {
+    public SimpleResponse<Object> productoException(ProductoException ex, HttpServletRequest request) {
         return SimpleResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
-                .path(request.getContextPath())
+                .ruta(request.getContextPath() + request.getServletPath())
                 .build();
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(TipoDocumentoException.class)
-    public SimpleResponse<Object> tipoDocumentoException(TipoDocumentoException ex, WebRequest request) {
+    public SimpleResponse<Object> tipoDocumentoException(TipoDocumentoException ex, HttpServletRequest request) {
         return SimpleResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
-                .path(request.getContextPath())
+                .ruta(request.getContextPath() + request.getServletPath())
                 .build();
     }
 }
