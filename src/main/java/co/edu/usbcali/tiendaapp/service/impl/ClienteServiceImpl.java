@@ -1,23 +1,25 @@
 package co.edu.usbcali.tiendaapp.service.impl;
 
 import co.edu.usbcali.tiendaapp.domain.Cliente;
-import co.edu.usbcali.tiendaapp.dto.ClienteDTO;
 import co.edu.usbcali.tiendaapp.exception.ClienteException;
 import co.edu.usbcali.tiendaapp.exception.TipoDocumentoException;
 import co.edu.usbcali.tiendaapp.mapper.ClienteMapper;
 import co.edu.usbcali.tiendaapp.repository.ClienteRepository;
+import co.edu.usbcali.tiendaapp.request.ActualizaClienteRequest;
+import co.edu.usbcali.tiendaapp.request.BuscaClienteTipoNumeroDocumentoRequest;
+import co.edu.usbcali.tiendaapp.request.GuardaClienteRequest;
+import co.edu.usbcali.tiendaapp.response.ClienteResponse;
 import co.edu.usbcali.tiendaapp.service.ClienteService;
 import co.edu.usbcali.tiendaapp.service.TipoDocumentoService;
 import co.edu.usbcali.tiendaapp.utility.message.ClienteServiceMessage;
 import co.edu.usbcali.tiendaapp.utility.ValidacionUtility;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
-
-    private static final Integer ESTADO_LENGTH = 1;
 
     private final ClienteRepository clienteRepository;
 
@@ -34,17 +36,17 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public List<ClienteDTO> obtenerTodos() {
-        return clienteMapper.domainToDtoList(clienteRepository.findAll());
+    public List<ClienteResponse> obtenerTodos() {
+        return clienteMapper.domainToResponseList(clienteRepository.findAll());
     }
 
     @Override
-    public ClienteDTO buscarPorId(Integer id) throws ClienteException {
+    public ClienteResponse buscarPorId(Integer id) throws ClienteException {
         ValidacionUtility.integerIsNullOrLessZero(id, new ClienteException(ClienteServiceMessage.ID_NO_VALIDO_MSG));
 
         return clienteRepository
                 .findById(id)
-                .map(clienteMapper::domainToDto)
+                .map(clienteMapper::domainToResponse)
                 .orElseThrow(() -> new ClienteException(String
                         .format(ClienteServiceMessage.CLIENTE_NO_ENCONTRADO_POR_ID, id))
                 );
@@ -62,49 +64,48 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public ClienteDTO guardar(ClienteDTO clienteDTO) throws ClienteException, TipoDocumentoException {
-        validarCliente(clienteDTO, false);
-
-        Cliente cliente = clienteMapper.dtoToDomain(clienteDTO);
-        cliente.setTipoDocumento(tipoDocumentoService.buscarTipoDocumentoPorId(clienteDTO.getTipoDocumentoId()));
-
-        return clienteMapper.domainToDto(clienteRepository.save(cliente));
+    public ClienteResponse buscarPorTipoNumeroDocumento(
+            @NotNull(message = ClienteServiceMessage.CLIENTE_NULO)
+            BuscaClienteTipoNumeroDocumentoRequest buscaClienteTipoNumeroDocumentoRequest
+    ) throws ClienteException {
+        return clienteRepository
+                .findByTipoDocumentoIdAndDocumento(
+                        buscaClienteTipoNumeroDocumentoRequest.getTipoDocumentoId(),
+                        buscaClienteTipoNumeroDocumentoRequest.getDocumento()
+                )
+                .map(clienteMapper::domainToResponse)
+                .orElseThrow(() -> new ClienteException(String
+                        .format(ClienteServiceMessage.CLIENTE_NO_ENCONTRADO_POR_TIPO_NUMERO_DOCUMENTO,
+                                buscaClienteTipoNumeroDocumentoRequest.getDocumento()))
+                );
     }
 
     @Override
-    public ClienteDTO actualizar(ClienteDTO clienteDTO) throws ClienteException, TipoDocumentoException {
-        validarCliente(clienteDTO, true);
+    public ClienteResponse guardar(
+            @NotNull(message = ClienteServiceMessage.CLIENTE_NULO)
+            GuardaClienteRequest guardaClienteRequest
+    ) throws ClienteException, TipoDocumentoException {
+        Cliente cliente = clienteMapper.requestGuardarToDomain(guardaClienteRequest);
+        cliente.setTipoDocumento(tipoDocumentoService
+                .buscarTipoDocumentoPorId(guardaClienteRequest.getTipoDocumentoId()));
 
-        if (!clienteRepository.existsById(clienteDTO.getId())) {
-            throw new ClienteException(String
-                    .format(ClienteServiceMessage.CLIENTE_NO_ENCONTRADO_POR_ID, clienteDTO.getId()));
-        }
-
-        Cliente cliente = clienteMapper.dtoToDomain(clienteDTO);
-        cliente.setTipoDocumento(tipoDocumentoService.buscarTipoDocumentoPorId(clienteDTO.getTipoDocumentoId()));
-
-        return clienteMapper.domainToDto(clienteRepository.save(cliente));
+        return clienteMapper.domainToResponse(clienteRepository.save(cliente));
     }
 
-    private void validarCliente(ClienteDTO clienteDTO, Boolean esActualizar) throws ClienteException {
-        if (Boolean.TRUE.equals(esActualizar)) {
-            ValidacionUtility.isNull(clienteDTO.getId(),
-                    new ClienteException(ClienteServiceMessage.ID_REQUERIDO));
+    @Override
+    public ClienteResponse actualizar(
+            @NotNull(message = ClienteServiceMessage.CLIENTE_NULO)
+            ActualizaClienteRequest actualizaClienteRequest
+    ) throws ClienteException, TipoDocumentoException {
+        if (!clienteRepository.existsById(actualizaClienteRequest.getId())) {
+            throw new ClienteException(String
+                    .format(ClienteServiceMessage.CLIENTE_NO_ENCONTRADO_POR_ID, actualizaClienteRequest.getId()));
         }
 
-        ValidacionUtility.isNull(clienteDTO,
-                new ClienteException(ClienteServiceMessage.CLIENTE_NULO));
-        ValidacionUtility.stringIsNullOrBlank(clienteDTO.getNombres(),
-                new ClienteException(ClienteServiceMessage.NOMBRES_REQUERIDOS));
-        ValidacionUtility.stringIsNullOrBlank(clienteDTO.getApellidos(),
-                new ClienteException(ClienteServiceMessage.APELLIDOS_REQUERIDOS));
-        ValidacionUtility.stringIsNullOrBlank(clienteDTO.getDocumento(),
-                new ClienteException(ClienteServiceMessage.DOCUMENTO_REQUERIDO));
-        ValidacionUtility.stringIsNullOrBlank(clienteDTO.getEstado(),
-                new ClienteException(ClienteServiceMessage.ESTADO_REQUERIDO));
-        ValidacionUtility.stringLength(clienteDTO.getEstado(), ESTADO_LENGTH,
-                new ClienteException(String.format(ClienteServiceMessage.ESTADO_SUPERA_LONGITUD, ESTADO_LENGTH)));
-        ValidacionUtility.integerIsNullOrLessZero(clienteDTO.getTipoDocumentoId(),
-                new ClienteException(ClienteServiceMessage.TIPO_DOCUMENTO_ID_REQUERIDO));
+        Cliente cliente = clienteMapper.requestActualizarToDomain(actualizaClienteRequest);
+        cliente.setTipoDocumento(tipoDocumentoService
+                .buscarTipoDocumentoPorId(actualizaClienteRequest.getTipoDocumentoId()));
+
+        return clienteMapper.domainToResponse(clienteRepository.save(cliente));
     }
 }

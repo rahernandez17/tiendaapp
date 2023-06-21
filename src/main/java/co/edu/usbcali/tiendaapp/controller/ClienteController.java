@@ -1,14 +1,18 @@
 package co.edu.usbcali.tiendaapp.controller;
 
-import co.edu.usbcali.tiendaapp.dto.ClienteDTO;
 import co.edu.usbcali.tiendaapp.exception.ClienteException;
 import co.edu.usbcali.tiendaapp.exception.TipoDocumentoException;
+import co.edu.usbcali.tiendaapp.request.ActualizaClienteRequest;
+import co.edu.usbcali.tiendaapp.request.BuscaClienteTipoNumeroDocumentoRequest;
+import co.edu.usbcali.tiendaapp.request.GuardaClienteRequest;
+import co.edu.usbcali.tiendaapp.response.ClienteResponse;
 import co.edu.usbcali.tiendaapp.response.ListSimpleResponse;
 import co.edu.usbcali.tiendaapp.response.SimpleResponse;
 import co.edu.usbcali.tiendaapp.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +40,9 @@ public class ClienteController {
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @GetMapping(value = "/obtener-todos", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ListSimpleResponse<ClienteDTO>> obtenerTodos() {
+    public ResponseEntity<ListSimpleResponse<ClienteResponse>> obtenerTodos() {
         return new ResponseEntity<>(
-                ListSimpleResponse.<ClienteDTO>builder()
+                ListSimpleResponse.<ClienteResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenidos exitosamente")
                         .valor(clienteService.obtenerTodos())
@@ -52,13 +56,37 @@ public class ClienteController {
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @GetMapping(value = "/obtener-por-id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<SimpleResponse<ClienteDTO>> obtenerPorId(@PathVariable Integer id)
+    public ResponseEntity<SimpleResponse<ClienteResponse>> obtenerPorId(@PathVariable Integer id)
             throws ClienteException {
         return new ResponseEntity<>(
-                SimpleResponse.<ClienteDTO>builder()
+                SimpleResponse.<ClienteResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenido con éxito")
                         .valor(clienteService.buscarPorId(id))
+                        .build(), HttpStatus.OK);
+    }
+
+    @Operation(
+            operationId = "ObtenerPorTipoNumeroDocumento",
+            summary = "Obtener un cliente por tipo y número de documento",
+            description = "Obtener un cliente por tipo y número de documento"
+    )
+    @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
+    @GetMapping(
+            value = "/obtener-por-tipo-numero-documento",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
+    public ResponseEntity<SimpleResponse<ClienteResponse>> obtenerPorTipoNumeroDocumento(
+            @RequestBody @Valid
+            BuscaClienteTipoNumeroDocumentoRequest buscaClienteTipoNumeroDocumentoRequest
+    ) throws ClienteException {
+        return new ResponseEntity<>(
+                SimpleResponse.<ClienteResponse>builder()
+                        .codigo(HttpStatus.OK.value())
+                        .mensaje("Obtenido con éxito")
+                        .valor(clienteService
+                                .buscarPorTipoNumeroDocumento(buscaClienteTipoNumeroDocumentoRequest))
                         .build(), HttpStatus.OK);
     }
 
@@ -74,13 +102,14 @@ public class ClienteController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<SimpleResponse<ClienteDTO>> guardar(@RequestBody ClienteDTO clienteDTO)
-            throws TipoDocumentoException, ClienteException {
+    public ResponseEntity<SimpleResponse<ClienteResponse>> guardar(
+            @RequestBody @Valid GuardaClienteRequest guardaClienteRequest
+    ) throws TipoDocumentoException, ClienteException {
         return new ResponseEntity<>(
-                SimpleResponse.<ClienteDTO>builder()
+                SimpleResponse.<ClienteResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Creado con éxito")
-                        .valor(clienteService.guardar(clienteDTO))
+                        .valor(clienteService.guardar(guardaClienteRequest))
                         .build(), HttpStatus.OK);
     }
 
@@ -96,13 +125,14 @@ public class ClienteController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<SimpleResponse<ClienteDTO>> actualizar(@RequestBody ClienteDTO clienteDTO)
-            throws TipoDocumentoException, ClienteException {
+    public ResponseEntity<SimpleResponse<ClienteResponse>> actualizar(
+            @RequestBody @Valid ActualizaClienteRequest actualizaClienteRequest
+    ) throws TipoDocumentoException, ClienteException {
         return new ResponseEntity<>(
-                SimpleResponse.<ClienteDTO>builder()
+                SimpleResponse.<ClienteResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Actualizado con éxito")
-                        .valor(clienteService.actualizar(clienteDTO))
+                        .valor(clienteService.actualizar(actualizaClienteRequest))
                         .build(), HttpStatus.OK);
     }
 }

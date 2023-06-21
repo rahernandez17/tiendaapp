@@ -14,6 +14,7 @@ public class ActualizaCategoriaRequest {
     @NotNull(message = CategoriaServiceMessage.ID_REQUERIDO)
     private Integer id;
 
+    // @NotNull(message = CategoriaServiceMessage.NOMBRE_REQUERIDO)
     @Length(max = 10, message = CategoriaServiceMessage.NOMBRE_LENGTH)
     private String nombre;
 

@@ -15,11 +15,12 @@ public interface CategoriaMapper {
 
     CategoriaResponse domainToResponse(Categoria categoria);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "productos", ignore = true)
-    Categoria guardaCategoriaRequestToDomain(GuardaCategoriaRequest guardaCategoriaRequest);
+    Categoria requestGuardarToDomain(GuardaCategoriaRequest guardaCategoriaRequest);
 
     @Mapping(target = "productos", ignore = true)
-    Categoria actualizaCategoriaRequestToDomain(ActualizaCategoriaRequest actualizaCategoriaRequest);
+    Categoria requestActualizarToDomain(ActualizaCategoriaRequest actualizaCategoriaRequest);
 
     List<CategoriaResponse> domainToResponseList(List<Categoria> categorias);
 }

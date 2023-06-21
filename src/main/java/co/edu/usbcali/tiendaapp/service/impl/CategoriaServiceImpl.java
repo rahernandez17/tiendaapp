@@ -68,7 +68,7 @@ public class CategoriaServiceImpl implements CategoriaService {
                     .format(CategoriaServiceMessage.NOMBRE_EXISTE, guardaCategoriaRequest.getNombre()));
         }
 
-        Categoria categoria = categoriaMapper.guardaCategoriaRequestToDomain(guardaCategoriaRequest);
+        Categoria categoria = categoriaMapper.requestGuardarToDomain(guardaCategoriaRequest);
 
         return categoriaMapper.domainToResponse(categoriaRepository.save(categoria));
     }
@@ -91,7 +91,7 @@ public class CategoriaServiceImpl implements CategoriaService {
                     .format(CategoriaServiceMessage.NOMBRE_EXISTE, actualizaCategoriaRequest.getNombre()));
         }
 
-        Categoria categoria = categoriaMapper.actualizaCategoriaRequestToDomain(actualizaCategoriaRequest);
+        Categoria categoria = categoriaMapper.requestActualizarToDomain(actualizaCategoriaRequest);
 
         return categoriaMapper.domainToResponse(categoriaRepository.save(categoria));
     }
