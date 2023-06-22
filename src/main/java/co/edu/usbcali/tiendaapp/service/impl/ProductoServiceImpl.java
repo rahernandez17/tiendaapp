@@ -12,11 +12,11 @@ import co.edu.usbcali.tiendaapp.service.CategoriaService;
 import co.edu.usbcali.tiendaapp.service.ProductoService;
 import co.edu.usbcali.tiendaapp.utility.ValidacionUtility;
 import co.edu.usbcali.tiendaapp.utility.message.ProductoServiceMessage;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
@@ -79,7 +79,7 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public ProductoResponse actualizar(
-            @Valid @NotNull(message = ProductoServiceMessage.PRODUCTO_NULO)
+            @NotNull(message = ProductoServiceMessage.PRODUCTO_NULO)
             ActualizaProductoRequest actualizaProductoRequest
     ) throws CategoriaException, ProductoException {
         if (!productoRepository.existsById(actualizaProductoRequest.getId())) {
@@ -87,8 +87,32 @@ public class ProductoServiceImpl implements ProductoService {
                     .format(ProductoServiceMessage.PRODUCTO_NO_ENCONTRADA_POR_ID, actualizaProductoRequest.getId()));
         }
 
-        Producto producto = productoMapper.requestActualizarToDomain(actualizaProductoRequest);
-        producto.setCategoria(categoriaService.buscarCategoriaPorId(actualizaProductoRequest.getCategoriaId()));
+        Producto producto = buscarProductoPorId(actualizaProductoRequest.getId());
+
+        producto.setNombre(
+                Objects.nonNull(actualizaProductoRequest.getNombre()) ?
+                        actualizaProductoRequest.getNombre() :
+                        producto.getNombre());
+        producto.setReferencia(
+                Objects.nonNull(actualizaProductoRequest.getReferencia()) ?
+                        actualizaProductoRequest.getReferencia() :
+                        producto.getReferencia());
+        producto.setDescripcion(
+                Objects.nonNull(actualizaProductoRequest.getDescripcion()) ?
+                        actualizaProductoRequest.getDescripcion() :
+                        producto.getDescripcion());
+        producto.setPrecioUnitario(
+                Objects.nonNull(actualizaProductoRequest.getPrecioUnitario()) ?
+                        actualizaProductoRequest.getPrecioUnitario() :
+                        producto.getPrecioUnitario());
+        producto.setUnidadesDisponibles(
+                Objects.nonNull(actualizaProductoRequest.getUnidadesDisponibles()) ?
+                        actualizaProductoRequest.getUnidadesDisponibles() :
+                        producto.getUnidadesDisponibles());
+        producto.setCategoria(
+                Objects.nonNull(actualizaProductoRequest.getCategoriaId()) ?
+                        categoriaService.buscarCategoriaPorId(actualizaProductoRequest.getCategoriaId()) :
+                        producto.getCategoria());
 
         return productoMapper.domainToResponse(productoRepository.save(producto));
     }

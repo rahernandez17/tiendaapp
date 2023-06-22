@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CategoriaServiceMessage {
 
-    public static final String ID_NO_VALIDO_MSG = "Debe ingresar un id válido";
+    public static final String ID_NO_VALIDO_MSG = "Debe ingresar un id válido para la categoría";
 
     public static final String CATEGORIA_NO_ENCONTRADA_POR_ID = "No se ha encontrado la categoría con ID {%s}";
 

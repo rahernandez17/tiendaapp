@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClienteServiceMessage {
 
-    public static final String ID_NO_VALIDO_MSG = "Debe ingresar un id válido";
+    public static final String ID_NO_VALIDO_MSG = "Debe ingresar un id válido para el cliente";
 
     public static final String CLIENTE_NO_ENCONTRADO_POR_ID = "No se ha encontrado el cliente con ID {%s}";
 

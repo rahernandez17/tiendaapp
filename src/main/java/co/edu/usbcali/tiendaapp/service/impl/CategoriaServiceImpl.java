@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CategoriaServiceImpl implements CategoriaService {
@@ -91,7 +92,16 @@ public class CategoriaServiceImpl implements CategoriaService {
                     .format(CategoriaServiceMessage.NOMBRE_EXISTE, actualizaCategoriaRequest.getNombre()));
         }
 
-        Categoria categoria = categoriaMapper.requestActualizarToDomain(actualizaCategoriaRequest);
+        Categoria categoria = buscarCategoriaPorId(actualizaCategoriaRequest.getId());
+
+        categoria.setNombre(
+                Objects.nonNull(actualizaCategoriaRequest.getNombre()) ?
+                        actualizaCategoriaRequest.getNombre() :
+                        categoria.getNombre());
+        categoria.setDescripcion(
+                Objects.nonNull(actualizaCategoriaRequest.getDescripcion()) ?
+                        actualizaCategoriaRequest.getDescripcion() :
+                        categoria.getDescripcion());
 
         return categoriaMapper.domainToResponse(categoriaRepository.save(categoria));
     }
