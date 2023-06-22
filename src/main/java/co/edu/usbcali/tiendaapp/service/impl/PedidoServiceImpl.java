@@ -1,17 +1,20 @@
 package co.edu.usbcali.tiendaapp.service.impl;
 
 import co.edu.usbcali.tiendaapp.domain.Pedido;
-import co.edu.usbcali.tiendaapp.dto.PedidoDTO;
 import co.edu.usbcali.tiendaapp.exception.ClienteException;
 import co.edu.usbcali.tiendaapp.exception.EstadoPedidoException;
 import co.edu.usbcali.tiendaapp.exception.PedidoException;
 import co.edu.usbcali.tiendaapp.mapper.PedidoMapper;
 import co.edu.usbcali.tiendaapp.repository.PedidoRepository;
+import co.edu.usbcali.tiendaapp.request.ActualizaPedidoRequest;
+import co.edu.usbcali.tiendaapp.request.GuardaPedidoRequest;
+import co.edu.usbcali.tiendaapp.response.PedidoResponse;
 import co.edu.usbcali.tiendaapp.service.ClienteService;
 import co.edu.usbcali.tiendaapp.service.EstadoPedidoService;
 import co.edu.usbcali.tiendaapp.service.PedidoService;
 import co.edu.usbcali.tiendaapp.utility.ValidacionUtility;
 import co.edu.usbcali.tiendaapp.utility.message.PedidoServiceMessage;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,17 +42,17 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public List<PedidoDTO> obtenerTodos() {
-        return pedidoMapper.domainToDtoList(pedidoRepository.findAll());
+    public List<PedidoResponse> obtenerTodos() {
+        return pedidoMapper.domainToResponseList(pedidoRepository.findAll());
     }
 
     @Override
-    public PedidoDTO buscarPorId(Integer id) throws PedidoException {
+    public PedidoResponse buscarPorId(Integer id) throws PedidoException {
         ValidacionUtility.integerIsNullOrLessZero(id, new PedidoException(PedidoServiceMessage.ID_NO_VALIDO_MSG));
 
         return pedidoRepository
                 .findById(id)
-                .map(pedidoMapper::domainToDto)
+                .map(pedidoMapper::domainToResponse)
                 .orElseThrow(() -> new PedidoException(String
                         .format(PedidoServiceMessage.PEDIDO_NO_ENCONTRADA_POR_ID, id)));
     }
@@ -65,47 +68,31 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public PedidoDTO guardar(PedidoDTO pedidoDTO) throws ClienteException, EstadoPedidoException, PedidoException {
-        validarPedido(pedidoDTO, false);
+    public PedidoResponse guardar(
+            @NotNull(message = PedidoServiceMessage.PEDIDO_NULO)
+            GuardaPedidoRequest guardaPedidoRequest
+    ) throws ClienteException, EstadoPedidoException, PedidoException {
+        Pedido pedido = pedidoMapper.requestGuardarToDomain(guardaPedidoRequest);
+        pedido.setCliente(clienteService.buscarClientePorId(guardaPedidoRequest.getClienteId()));
+        pedido.setEstadoPedido(estadoPedidoService.buscarEstadoPedidoPorId(guardaPedidoRequest.getEstadoPedidoId()));
 
-        Pedido pedido = pedidoMapper.dtoToDomain(pedidoDTO);
-        pedido.setCliente(clienteService.buscarClientePorId(pedidoDTO.getClienteId()));
-        pedido.setEstadoPedido(estadoPedidoService.buscarEstadoPedidoPorId(pedidoDTO.getEstadoPedidoId()));
-
-        return pedidoMapper.domainToDto(pedidoRepository.save(pedido));
+        return pedidoMapper.domainToResponse(pedidoRepository.save(pedido));
     }
 
     @Override
-    public PedidoDTO actualizar(PedidoDTO pedidoDTO) throws ClienteException, EstadoPedidoException, PedidoException {
-        validarPedido(pedidoDTO, true);
-
-        if (!pedidoRepository.existsById(pedidoDTO.getId())) {
+    public PedidoResponse actualizar(
+            @NotNull(message = PedidoServiceMessage.PEDIDO_NULO)
+            ActualizaPedidoRequest actualizaPedidoRequest
+    ) throws ClienteException, EstadoPedidoException, PedidoException {
+        if (!pedidoRepository.existsById(actualizaPedidoRequest.getId())) {
             throw new PedidoException(String
-                    .format(PedidoServiceMessage.PEDIDO_NO_ENCONTRADA_POR_ID, pedidoDTO.getId()));
+                    .format(PedidoServiceMessage.PEDIDO_NO_ENCONTRADA_POR_ID, actualizaPedidoRequest.getId()));
         }
 
-        Pedido pedido = pedidoMapper.dtoToDomain(pedidoDTO);
-        pedido.setCliente(clienteService.buscarClientePorId(pedidoDTO.getClienteId()));
-        pedido.setEstadoPedido(estadoPedidoService.buscarEstadoPedidoPorId(pedidoDTO.getEstadoPedidoId()));
+        Pedido pedido = pedidoMapper.requestActualizarToDomain(actualizaPedidoRequest);
+        pedido.setCliente(clienteService.buscarClientePorId(actualizaPedidoRequest.getClienteId()));
+        pedido.setEstadoPedido(estadoPedidoService.buscarEstadoPedidoPorId(actualizaPedidoRequest.getEstadoPedidoId()));
 
-        return pedidoMapper.domainToDto(pedidoRepository.save(pedido));
-    }
-
-    private void validarPedido(PedidoDTO pedidoDTO, Boolean esActualizar) throws PedidoException {
-        if (Boolean.TRUE.equals(esActualizar)){
-            ValidacionUtility.isNull(pedidoDTO.getId(),
-                    new PedidoException(PedidoServiceMessage.ID_REQUERIDO));
-        }
-
-        ValidacionUtility.isNull(pedidoDTO,
-                new PedidoException(PedidoServiceMessage.PEDIDO_NULO));
-        ValidacionUtility.isNull(pedidoDTO.getFecha(),
-                new PedidoException(PedidoServiceMessage.FECHA_REQUERIDA));
-        ValidacionUtility.bigDecimalIsNullOrLessZero(pedidoDTO.getTotal(),
-                new PedidoException(PedidoServiceMessage.TOTAL_REQUERIDO));
-        ValidacionUtility.integerIsNullOrLessZero(pedidoDTO.getClienteId(),
-                new PedidoException(PedidoServiceMessage.CLIENTE_ID_REQUERIDO));
-        ValidacionUtility.integerIsNullOrLessZero(pedidoDTO.getEstadoPedidoId(),
-                new PedidoException(PedidoServiceMessage.ESTADO_PEDIDO_ID_REQUERIDO));
+        return pedidoMapper.domainToResponse(pedidoRepository.save(pedido));
     }
 }

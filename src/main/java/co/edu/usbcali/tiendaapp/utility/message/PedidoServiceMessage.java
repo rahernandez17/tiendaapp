@@ -14,7 +14,9 @@ public class PedidoServiceMessage {
 
     public static final String FECHA_REQUERIDA = "La fecha es requerida";
 
-    public static final String TOTAL_REQUERIDO = "El total es requerido y debe ser positivo";
+    public static final String TOTAL_REQUERIDO = "El total es requerido";
+
+    public static final String TOTAL_POSITIVO = "El total debe ser positivo";
 
     public static final String CLIENTE_ID_REQUERIDO = "El id del cliente es requerido y debe ser positivo";
 

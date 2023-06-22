@@ -1,13 +1,12 @@
 package co.edu.usbcali.tiendaapp.controller;
 
-import co.edu.usbcali.tiendaapp.exception.CategoriaException;
-import co.edu.usbcali.tiendaapp.exception.ProductoException;
-import co.edu.usbcali.tiendaapp.request.ActualizaProductoRequest;
-import co.edu.usbcali.tiendaapp.request.GuardaProductoRequest;
+import co.edu.usbcali.tiendaapp.exception.*;
+import co.edu.usbcali.tiendaapp.request.ActualizaPedidoRequest;
+import co.edu.usbcali.tiendaapp.request.GuardaPedidoRequest;
 import co.edu.usbcali.tiendaapp.response.ListSimpleResponse;
-import co.edu.usbcali.tiendaapp.response.ProductoResponse;
+import co.edu.usbcali.tiendaapp.response.PedidoResponse;
 import co.edu.usbcali.tiendaapp.response.SimpleResponse;
-import co.edu.usbcali.tiendaapp.service.ProductoService;
+import co.edu.usbcali.tiendaapp.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,56 +17,56 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/producto")
+@RequestMapping("/pedido")
 @Tag(
-        name = "Producto API",
-        description = "Operaciones de lectura para los productos"
+        name = "Pedido API",
+        description = "Operaciones de lectura para los pedidos"
 )
-public class ProductoController {
+public class PedidoController {
 
-    private final ProductoService productoService;
+    private final PedidoService pedidoService;
 
-    public ProductoController(ProductoService productoService) {
-        this.productoService = productoService;
+    public PedidoController(PedidoService pedidoService) {
+        this.pedidoService = pedidoService;
     }
 
     @Operation(
             operationId = "ObtenerTodos",
-            summary = "Obtener todos los productos",
-            description = "Obtener todos los productos"
+            summary = "Obtener todos los pedidos",
+            description = "Obtener todos los pedidos"
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @GetMapping(value = "/obtener-todos", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ListSimpleResponse<ProductoResponse>> obtenerTodos() {
+    public ResponseEntity<ListSimpleResponse<PedidoResponse>> obtenerTodos() {
         return new ResponseEntity<>(
-                ListSimpleResponse.<ProductoResponse>builder()
+                ListSimpleResponse.<PedidoResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenidos exitosamente")
-                        .valor(productoService.obtenerTodos())
+                        .valor(pedidoService.obtenerTodos())
                         .build(), HttpStatus.OK);
     }
 
     @Operation(
             operationId = "ObtenerPorId",
-            summary = "Obtener un producto por id",
-            description = "Obtener un producto por id"
+            summary = "Obtener un pedido por id",
+            description = "Obtener un pedido por id"
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @GetMapping(value = "/obtener-por-id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<SimpleResponse<ProductoResponse>> obtenerPorId(@PathVariable Integer id)
-            throws ProductoException {
+    public ResponseEntity<SimpleResponse<PedidoResponse>> obtenerPorId(@PathVariable Integer id)
+            throws PedidoException {
         return new ResponseEntity<>(
-                SimpleResponse.<ProductoResponse>builder()
+                SimpleResponse.<PedidoResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenido con éxito")
-                        .valor(productoService.buscarPorId(id))
+                        .valor(pedidoService.buscarPorId(id))
                         .build(), HttpStatus.OK);
     }
 
     @Operation(
             operationId = "Guardar",
-            summary = "Guardar un producto",
-            description = "Guardar un producto"
+            summary = "Guardar un pedido",
+            description = "Guardar un pedido"
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @ApiResponse(responseCode = "400", description = "HTTP Status 400 BAD REQUEST")
@@ -76,21 +75,21 @@ public class ProductoController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<SimpleResponse<ProductoResponse>> guardar(
-            @RequestBody @Valid GuardaProductoRequest guardaProductoRequest
-    ) throws ProductoException, CategoriaException {
+    public ResponseEntity<SimpleResponse<PedidoResponse>> guardar(
+            @RequestBody @Valid GuardaPedidoRequest guardaPedidoRequest
+    ) throws PedidoException, EstadoPedidoException, ClienteException {
         return new ResponseEntity<>(
-                SimpleResponse.<ProductoResponse>builder()
+                SimpleResponse.<PedidoResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Creado con éxito")
-                        .valor(productoService.guardar(guardaProductoRequest))
+                        .valor(pedidoService.guardar(guardaPedidoRequest))
                         .build(), HttpStatus.OK);
     }
 
     @Operation(
             operationId = "Actualizar",
-            summary = "Actualizar un producto",
-            description = "Actualizar un producto"
+            summary = "Actualizar un pedido",
+            description = "Actualizar un pedido"
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @ApiResponse(responseCode = "400", description = "HTTP Status 400 BAD REQUEST")
@@ -99,14 +98,14 @@ public class ProductoController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<SimpleResponse<ProductoResponse>> actualizar(
-            @RequestBody @Valid ActualizaProductoRequest actualizaProductoRequest
-    ) throws ProductoException, CategoriaException {
+    public ResponseEntity<SimpleResponse<PedidoResponse>> actualizar(
+            @RequestBody @Valid ActualizaPedidoRequest actualizaPedidoRequest
+    ) throws PedidoException, EstadoPedidoException, ClienteException {
         return new ResponseEntity<>(
-                SimpleResponse.<ProductoResponse>builder()
+                SimpleResponse.<PedidoResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Actualizado con éxito")
-                        .valor(productoService.actualizar(actualizaProductoRequest))
+                        .valor(pedidoService.actualizar(actualizaPedidoRequest))
                         .build(), HttpStatus.OK);
     }
 }

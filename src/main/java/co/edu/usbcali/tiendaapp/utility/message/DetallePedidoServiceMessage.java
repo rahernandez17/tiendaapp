@@ -14,7 +14,11 @@ public class DetallePedidoServiceMessage {
 
     public static final String CANTIDAD_REQUERIDA = "La cantidad es requerida";
 
+    public static final String CANTIDAD_POSITIVA = "La cantidad debe ser positiva";
+
     public static final String VALOR_REQUERIDO = "El valor es requerido";
+
+    public static final String VALOR_POSITIVO = "El valor debe ser positivo";
 
     public static final String PEDIDO_ID_REQUERIDO = "El id del pedido es requerido y debe ser positivo";
 

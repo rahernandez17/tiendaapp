@@ -1,7 +1,7 @@
 package co.edu.usbcali.tiendaapp.advice;
 
 import co.edu.usbcali.tiendaapp.exception.*;
-import co.edu.usbcali.tiendaapp.response.SimpleResponse;
+import co.edu.usbcali.tiendaapp.response.SimpleErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -15,13 +15,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
 @RestControllerAdvice
 public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public SimpleResponse<Object> handleInvalidArgument(
+    public SimpleErrorResponse handleInvalidArgument(
             MethodArgumentNotValidException ex, HttpServletRequest request
     ) {
         Map<String, String> errorMap = ex.getBindingResult().getFieldErrors().stream()
@@ -32,9 +31,8 @@ public class ApplicationExceptionHandler {
                         )
                 );
 
-        return SimpleResponse.builder()
+        return SimpleErrorResponse.builder()
                 .codigo(HttpStatus.BAD_REQUEST.value())
-                .mensaje("Alunos de los campos diligenciados poseen errores")
                 .errores(errorMap)
                 .ruta(request.getContextPath() + request.getServletPath())
                 .build();
@@ -42,8 +40,8 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public SimpleResponse<Object> handleNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
-        return SimpleResponse.builder()
+    public SimpleErrorResponse handleNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        return SimpleErrorResponse.builder()
                 .codigo(HttpStatus.BAD_REQUEST.value())
                 .mensaje(ex.getMessage())
                 .ruta(request.getContextPath() + request.getServletPath())
@@ -52,8 +50,8 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ClienteException.class)
-    public SimpleResponse<Object> clienteException(ClienteException ex, HttpServletRequest request) {
-        return SimpleResponse.builder()
+    public SimpleErrorResponse clienteException(ClienteException ex, HttpServletRequest request) {
+        return SimpleErrorResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
                 .ruta(request.getContextPath() + request.getServletPath())
@@ -62,8 +60,8 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CategoriaException.class)
-    public SimpleResponse<Object> categoriaException(CategoriaException ex, HttpServletRequest request) {
-        return SimpleResponse.builder()
+    public SimpleErrorResponse categoriaException(CategoriaException ex, HttpServletRequest request) {
+        return SimpleErrorResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
                 .ruta(request.getContextPath() + request.getServletPath())
@@ -72,8 +70,8 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DetallePedidoException.class)
-    public SimpleResponse<Object> detallePedidoException(DetallePedidoException ex, HttpServletRequest request) {
-        return SimpleResponse.builder()
+    public SimpleErrorResponse detallePedidoException(DetallePedidoException ex, HttpServletRequest request) {
+        return SimpleErrorResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
                 .ruta(request.getContextPath() + request.getServletPath())
@@ -82,8 +80,8 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(EstadoPedidoException.class)
-    public SimpleResponse<Object> estadoPedidoException(EstadoPedidoException ex, HttpServletRequest request) {
-        return SimpleResponse.builder()
+    public SimpleErrorResponse estadoPedidoException(EstadoPedidoException ex, HttpServletRequest request) {
+        return SimpleErrorResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
                 .ruta(request.getContextPath() + request.getServletPath())
@@ -92,8 +90,8 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(PedidoException.class)
-    public SimpleResponse<Object> pedidoException(PedidoException ex, HttpServletRequest request) {
-        return SimpleResponse.builder()
+    public SimpleErrorResponse pedidoException(PedidoException ex, HttpServletRequest request) {
+        return SimpleErrorResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
                 .ruta(request.getContextPath() + request.getServletPath())
@@ -102,8 +100,8 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ProductoException.class)
-    public SimpleResponse<Object> productoException(ProductoException ex, HttpServletRequest request) {
-        return SimpleResponse.builder()
+    public SimpleErrorResponse productoException(ProductoException ex, HttpServletRequest request) {
+        return SimpleErrorResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
                 .ruta(request.getContextPath() + request.getServletPath())
@@ -112,8 +110,8 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(TipoDocumentoException.class)
-    public SimpleResponse<Object> tipoDocumentoException(TipoDocumentoException ex, HttpServletRequest request) {
-        return SimpleResponse.builder()
+    public SimpleErrorResponse tipoDocumentoException(TipoDocumentoException ex, HttpServletRequest request) {
+        return SimpleErrorResponse.builder()
                 .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .mensaje(ex.getMessage())
                 .ruta(request.getContextPath() + request.getServletPath())

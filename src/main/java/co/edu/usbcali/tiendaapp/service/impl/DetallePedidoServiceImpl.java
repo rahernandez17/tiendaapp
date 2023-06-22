@@ -1,7 +1,6 @@
 package co.edu.usbcali.tiendaapp.service.impl;
 
 import co.edu.usbcali.tiendaapp.domain.DetallePedido;
-import co.edu.usbcali.tiendaapp.dto.DetallePedidoDTO;
 import co.edu.usbcali.tiendaapp.exception.DetallePedidoException;
 import co.edu.usbcali.tiendaapp.exception.PedidoException;
 import co.edu.usbcali.tiendaapp.exception.ProductoException;
@@ -87,22 +86,5 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
         detallePedido.setProducto(productoService.buscarProductoPorId(actualizaDetallePedidoRequest.getProductoId()));
 
         return detallePedidoMapper.domainToResponse(detallePedidoRepository.save(detallePedido));
-    }
-
-    private void validarDetallePedido(DetallePedidoDTO detallePedidoDTO, Boolean esActualizar)
-            throws DetallePedidoException {
-        if (Boolean.TRUE.equals(esActualizar)){
-            ValidacionUtility.isNull(detallePedidoDTO.getId(),
-                    new DetallePedidoException(DetallePedidoServiceMessage.ID_REQUERIDO));
-        }
-
-        ValidacionUtility.bigDecimalIsNullOrLessZero(detallePedidoDTO.getCantidad(),
-                new DetallePedidoException(DetallePedidoServiceMessage.CANTIDAD_REQUERIDA));
-        ValidacionUtility.bigDecimalIsNullOrLessZero(detallePedidoDTO.getValor(),
-                new DetallePedidoException(DetallePedidoServiceMessage.VALOR_REQUERIDO));
-        ValidacionUtility.integerIsNullOrLessZero(detallePedidoDTO.getPedidoId(),
-                new DetallePedidoException(DetallePedidoServiceMessage.PEDIDO_ID_REQUERIDO));
-        ValidacionUtility.integerIsNullOrLessZero(detallePedidoDTO.getProductoId(),
-                new DetallePedidoException(DetallePedidoServiceMessage.PRODUCTO_ID_REQUERIDO));
     }
 }
