@@ -1,7 +1,6 @@
 package co.edu.usbcali.tiendaapp.mapper;
 
 import co.edu.usbcali.tiendaapp.domain.DetallePedido;
-import co.edu.usbcali.tiendaapp.dto.DetallePedidoDTO;
 import co.edu.usbcali.tiendaapp.request.ActualizaDetallePedidoRequest;
 import co.edu.usbcali.tiendaapp.request.GuardaDetallePedidoRequest;
 import co.edu.usbcali.tiendaapp.response.DetallePedidoResponse;
