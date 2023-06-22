@@ -7,11 +7,15 @@ import co.edu.usbcali.tiendaapp.exception.PedidoException;
 import co.edu.usbcali.tiendaapp.exception.ProductoException;
 import co.edu.usbcali.tiendaapp.mapper.DetallePedidoMapper;
 import co.edu.usbcali.tiendaapp.repository.DetallePedidoRepository;
+import co.edu.usbcali.tiendaapp.request.ActualizaDetallePedidoRequest;
+import co.edu.usbcali.tiendaapp.request.GuardaDetallePedidoRequest;
+import co.edu.usbcali.tiendaapp.response.DetallePedidoResponse;
 import co.edu.usbcali.tiendaapp.service.DetallePedidoService;
 import co.edu.usbcali.tiendaapp.service.PedidoService;
 import co.edu.usbcali.tiendaapp.service.ProductoService;
 import co.edu.usbcali.tiendaapp.utility.ValidacionUtility;
 import co.edu.usbcali.tiendaapp.utility.message.DetallePedidoServiceMessage;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,50 +42,51 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
     }
 
     @Override
-    public List<DetallePedidoDTO> obtenerTodos() {
-        return detallePedidoMapper.domainToDtoList(detallePedidoRepository.findAll());
+    public List<DetallePedidoResponse> obtenerTodos() {
+        return detallePedidoMapper.domainToResponseList(detallePedidoRepository.findAll());
     }
 
     @Override
-    public DetallePedidoDTO buscarPorId(Integer id) throws DetallePedidoException {
+    public DetallePedidoResponse buscarPorId(Integer id) throws DetallePedidoException {
         ValidacionUtility.integerIsNullOrLessZero(id,
                 new DetallePedidoException(DetallePedidoServiceMessage.ID_NO_VALIDO_MSG));
 
         return detallePedidoRepository
                 .findById(id)
-                .map(detallePedidoMapper::domainToDto)
+                .map(detallePedidoMapper::domainToResponse)
                 .orElseThrow(() -> new DetallePedidoException(String
                         .format(DetallePedidoServiceMessage.DETALLE_PEDIDO_NO_ENCONTRADA_POR_ID, id))
                 );
     }
 
     @Override
-    public DetallePedidoDTO guardar(DetallePedidoDTO detallePedidoDTO)
-            throws PedidoException, ProductoException, DetallePedidoException {
-        validarDetallePedido(detallePedidoDTO, false);
+    public DetallePedidoResponse guardar(
+            @NotNull(message = DetallePedidoServiceMessage.DETALLE_PEDIDO_NULO)
+            GuardaDetallePedidoRequest guardaDetallePedidoRequest
+    ) throws PedidoException, ProductoException, DetallePedidoException {
+        DetallePedido detallePedido = detallePedidoMapper.requestGuardarToDomain(guardaDetallePedidoRequest);
+        detallePedido.setPedido(pedidoService.buscarPedidoPorId(guardaDetallePedidoRequest.getPedidoId()));
+        detallePedido.setProducto(productoService.buscarProductoPorId(guardaDetallePedidoRequest.getProductoId()));
 
-        DetallePedido detallePedido = detallePedidoMapper.dtoToDomain(detallePedidoDTO);
-        detallePedido.setPedido(pedidoService.buscarPedidoPorId(detallePedidoDTO.getPedidoId()));
-        detallePedido.setProducto(productoService.buscarProductoPorId(detallePedidoDTO.getProductoId()));
-
-        return detallePedidoMapper.domainToDto(detallePedidoRepository.save(detallePedido));
+        return detallePedidoMapper.domainToResponse(detallePedidoRepository.save(detallePedido));
     }
 
     @Override
-    public DetallePedidoDTO actualizar(DetallePedidoDTO detallePedidoDTO)
-            throws PedidoException, ProductoException, DetallePedidoException {
-        validarDetallePedido(detallePedidoDTO, true);
-
-        if (!detallePedidoRepository.existsById(detallePedidoDTO.getId())) {
+    public DetallePedidoResponse actualizar(
+            @NotNull(message = DetallePedidoServiceMessage.DETALLE_PEDIDO_NULO)
+            ActualizaDetallePedidoRequest actualizaDetallePedidoRequest
+    ) throws PedidoException, ProductoException, DetallePedidoException {
+        if (!detallePedidoRepository.existsById(actualizaDetallePedidoRequest.getId())) {
             throw new DetallePedidoException(String
-                    .format(DetallePedidoServiceMessage.DETALLE_PEDIDO_NO_ENCONTRADA_POR_ID, detallePedidoDTO.getId()));
+                    .format(DetallePedidoServiceMessage.DETALLE_PEDIDO_NO_ENCONTRADA_POR_ID,
+                            actualizaDetallePedidoRequest.getId()));
         }
 
-        DetallePedido detallePedido = detallePedidoMapper.dtoToDomain(detallePedidoDTO);
-        detallePedido.setPedido(pedidoService.buscarPedidoPorId(detallePedidoDTO.getPedidoId()));
-        detallePedido.setProducto(productoService.buscarProductoPorId(detallePedidoDTO.getProductoId()));
+        DetallePedido detallePedido = detallePedidoMapper.requestActualizarToDomain(actualizaDetallePedidoRequest);
+        detallePedido.setPedido(pedidoService.buscarPedidoPorId(actualizaDetallePedidoRequest.getPedidoId()));
+        detallePedido.setProducto(productoService.buscarProductoPorId(actualizaDetallePedidoRequest.getProductoId()));
 
-        return detallePedidoMapper.domainToDto(detallePedidoRepository.save(detallePedido));
+        return detallePedidoMapper.domainToResponse(detallePedidoRepository.save(detallePedido));
     }
 
     private void validarDetallePedido(DetallePedidoDTO detallePedidoDTO, Boolean esActualizar)
@@ -91,8 +96,6 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
                     new DetallePedidoException(DetallePedidoServiceMessage.ID_REQUERIDO));
         }
 
-        ValidacionUtility.isNull(detallePedidoDTO,
-                new DetallePedidoException(DetallePedidoServiceMessage.DETALLE_PEDIDO_NULO));
         ValidacionUtility.bigDecimalIsNullOrLessZero(detallePedidoDTO.getCantidad(),
                 new DetallePedidoException(DetallePedidoServiceMessage.CANTIDAD_REQUERIDA));
         ValidacionUtility.bigDecimalIsNullOrLessZero(detallePedidoDTO.getValor(),
