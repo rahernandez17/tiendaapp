@@ -1,7 +1,7 @@
 package co.edu.usbcali.tiendaapp.request;
 
 import co.edu.usbcali.tiendaapp.utility.message.ClienteServiceMessage;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,19 +15,19 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 public class GuardaClienteRequest {
 
-    @NotEmpty(message = ClienteServiceMessage.NOMBRES_REQUERIDOS)
+    @NotBlank(message = ClienteServiceMessage.NOMBRES_REQUERIDOS)
     @Length(max = 50, message = ClienteServiceMessage.NOMBRES_LENGTH)
     private String nombres;
 
-    @NotEmpty(message = ClienteServiceMessage.APELLIDOS_REQUERIDOS)
+    @NotBlank(message = ClienteServiceMessage.APELLIDOS_REQUERIDOS)
     @Length(max = 50, message = ClienteServiceMessage.APELLIDOS_LENGTH)
     private String apellidos;
 
-    @NotEmpty(message = ClienteServiceMessage.DOCUMENTO_REQUERIDO)
+    @NotBlank(message = ClienteServiceMessage.DOCUMENTO_REQUERIDO)
     @Length(max = 50, message = ClienteServiceMessage.DOCUMENTO_LENGTH)
     private String documento;
 
-    @NotEmpty(message = ClienteServiceMessage.ESTADO_REQUERIDO)
+    @NotBlank(message = ClienteServiceMessage.ESTADO_REQUERIDO)
     @Length(max = 1, message = ClienteServiceMessage.ESTADO_SUPERA_LONGITUD)
     private String estado;
 

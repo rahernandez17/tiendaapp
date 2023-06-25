@@ -1,7 +1,7 @@
 package co.edu.usbcali.tiendaapp.request;
 
 import co.edu.usbcali.tiendaapp.utility.message.ClienteServiceMessage;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BuscaClienteTipoNumeroDocumentoRequest {
 
-    @NotEmpty(message = ClienteServiceMessage.DOCUMENTO_REQUERIDO)
+    @NotBlank(message = ClienteServiceMessage.DOCUMENTO_REQUERIDO)
     private String documento;
 
     @NotNull(message = ClienteServiceMessage.TIPO_DOCUMENTO_ID_REQUERIDO)
