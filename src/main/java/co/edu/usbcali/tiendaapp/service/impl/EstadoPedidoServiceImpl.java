@@ -5,6 +5,7 @@ import co.edu.usbcali.tiendaapp.dto.EstadoPedidoDTO;
 import co.edu.usbcali.tiendaapp.exception.EstadoPedidoException;
 import co.edu.usbcali.tiendaapp.mapper.EstadoPedidoMapper;
 import co.edu.usbcali.tiendaapp.repository.EstadoPedidoRepository;
+import co.edu.usbcali.tiendaapp.response.EstadoPedidoResponse;
 import co.edu.usbcali.tiendaapp.service.EstadoPedidoService;
 import co.edu.usbcali.tiendaapp.utility.ValidacionUtility;
 import co.edu.usbcali.tiendaapp.utility.message.EstadoPedidoServiceMessage;
@@ -26,18 +27,18 @@ public class EstadoPedidoServiceImpl implements EstadoPedidoService {
     }
 
     @Override
-    public List<EstadoPedidoDTO> obtenerTodos() {
-        return estadoPedidoMapper.domainToDtoList(estadoPedidoRepository.findAll());
+    public List<EstadoPedidoResponse> obtenerTodos() {
+        return estadoPedidoMapper.domainToResponseList(estadoPedidoRepository.findAll());
     }
 
     @Override
-    public EstadoPedidoDTO buscarPorId(Integer id) throws EstadoPedidoException {
+    public EstadoPedidoResponse buscarPorId(Integer id) throws EstadoPedidoException {
         ValidacionUtility.integerIsNullOrLessZero(id,
                 new EstadoPedidoException(EstadoPedidoServiceMessage.ID_NO_VALIDO_MSG));
 
         return estadoPedidoRepository
                 .findById(id)
-                .map(estadoPedidoMapper::domainToDto)
+                .map(estadoPedidoMapper::domainToResponse)
                 .orElseThrow(() -> new EstadoPedidoException(String
                         .format(EstadoPedidoServiceMessage.ESTADO_PEDIDO_NO_ENCONTRADA_POR_ID, id))
                 );

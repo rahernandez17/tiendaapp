@@ -1,7 +1,7 @@
 package co.edu.usbcali.tiendaapp.domain;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +31,7 @@ public class Pedido {
     private Integer id;
 	
 	@Column(nullable = false)
-	private Instant fecha;
+	private LocalDate fecha;
 	
 	@Column(nullable = false, length = 19, precision = 2)
 	private BigDecimal total;

@@ -1,12 +1,13 @@
 package co.edu.usbcali.tiendaapp.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +17,8 @@ public class PedidoResponse {
 
     private Integer id;
 
-    private Instant fecha;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate fecha;
 
     private BigDecimal total;
 

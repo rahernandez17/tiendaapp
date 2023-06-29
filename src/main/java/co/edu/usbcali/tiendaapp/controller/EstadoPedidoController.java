@@ -1,7 +1,7 @@
 package co.edu.usbcali.tiendaapp.controller;
 
-import co.edu.usbcali.tiendaapp.dto.EstadoPedidoDTO;
 import co.edu.usbcali.tiendaapp.exception.EstadoPedidoException;
+import co.edu.usbcali.tiendaapp.response.EstadoPedidoResponse;
 import co.edu.usbcali.tiendaapp.response.ListSimpleResponse;
 import co.edu.usbcali.tiendaapp.response.SimpleResponse;
 import co.edu.usbcali.tiendaapp.service.EstadoPedidoService;
@@ -37,9 +37,9 @@ public class EstadoPedidoController {
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @GetMapping(value = "/obtener-todos", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ListSimpleResponse<EstadoPedidoDTO>> obtenerTodos() {
+    public ResponseEntity<ListSimpleResponse<EstadoPedidoResponse>> obtenerTodos() {
         return new ResponseEntity<>(
-                ListSimpleResponse.<EstadoPedidoDTO>builder()
+                ListSimpleResponse.<EstadoPedidoResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenidos con éxito")
                         .valor(estadoPedidoService.obtenerTodos())
@@ -54,10 +54,10 @@ public class EstadoPedidoController {
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @ApiResponse(responseCode = "404", description = "HTTP Status 404 NOT FOUND")
     @GetMapping(value = "/obtener-por-id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<SimpleResponse<EstadoPedidoDTO>> obtenerPorId(@PathVariable Integer id)
+    public ResponseEntity<SimpleResponse<EstadoPedidoResponse>> obtenerPorId(@PathVariable Integer id)
             throws EstadoPedidoException {
         return new ResponseEntity<>(
-                SimpleResponse.<EstadoPedidoDTO>builder()
+                SimpleResponse.<EstadoPedidoResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenido con éxito")
                         .valor(estadoPedidoService.buscarPorId(id))

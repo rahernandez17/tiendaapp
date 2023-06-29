@@ -22,7 +22,7 @@ public class ClienteResponse {
 
     private String estado;
 
-    private String tipoDocumentoId;
+    private Integer tipoDocumentoId;
 
     private String descripcionTipoDocumento;
 }

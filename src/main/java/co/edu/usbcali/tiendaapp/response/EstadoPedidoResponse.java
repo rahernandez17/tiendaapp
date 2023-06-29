@@ -1,4 +1,4 @@
-package co.edu.usbcali.tiendaapp.dto;
+package co.edu.usbcali.tiendaapp.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TipoDocumentoDTO {
+public class EstadoPedidoResponse {
     private Integer id;
+
     private String descripcion;
 }

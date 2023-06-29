@@ -1,9 +1,9 @@
 package co.edu.usbcali.tiendaapp.controller;
 
-import co.edu.usbcali.tiendaapp.dto.TipoDocumentoDTO;
 import co.edu.usbcali.tiendaapp.exception.TipoDocumentoException;
 import co.edu.usbcali.tiendaapp.response.ListSimpleResponse;
 import co.edu.usbcali.tiendaapp.response.SimpleResponse;
+import co.edu.usbcali.tiendaapp.response.TipoDocumentoResponse;
 import co.edu.usbcali.tiendaapp.service.TipoDocumentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,9 +35,9 @@ public class TipoDocumentoController {
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @GetMapping(value = "/obtener-todos", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ListSimpleResponse<TipoDocumentoDTO>> obtenerTodos() {
+    public ResponseEntity<ListSimpleResponse<TipoDocumentoResponse>> obtenerTodos() {
         return new ResponseEntity<>(
-                ListSimpleResponse.<TipoDocumentoDTO>builder()
+                ListSimpleResponse.<TipoDocumentoResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenidos con éxito")
                         .valor(tipoDocumentoService.obtenerTodos())
@@ -52,10 +52,10 @@ public class TipoDocumentoController {
     @ApiResponse(responseCode = "200", description = "HTTP Status 200 OK")
     @ApiResponse(responseCode = "404", description = "HTTP Status 404 NOT FOUND")
     @GetMapping(value = "/obtener-por-id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<SimpleResponse<TipoDocumentoDTO>> obtenerPorId(@PathVariable Integer id)
+    public ResponseEntity<SimpleResponse<TipoDocumentoResponse>> obtenerPorId(@PathVariable Integer id)
             throws TipoDocumentoException {
         return new ResponseEntity<>(
-                SimpleResponse.<TipoDocumentoDTO>builder()
+                SimpleResponse.<TipoDocumentoResponse>builder()
                         .codigo(HttpStatus.OK.value())
                         .mensaje("Obtenido con éxito")
                         .valor(tipoDocumentoService.buscarPorId(id))

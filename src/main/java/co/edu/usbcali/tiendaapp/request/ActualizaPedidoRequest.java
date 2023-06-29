@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class ActualizaPedidoRequest {
     private Integer id;
 
     @NotNull(message = PedidoServiceMessage.FECHA_REQUERIDA)
-    private Instant fecha;
+    private LocalDate fecha;
 
     @NotNull(message = PedidoServiceMessage.TOTAL_REQUERIDO)
     @Min(value = 1, message = PedidoServiceMessage.TOTAL_POSITIVO)
