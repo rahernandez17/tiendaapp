@@ -1,7 +1,6 @@
 package co.edu.usbcali.tiendaapp.mapper;
 
 import co.edu.usbcali.tiendaapp.domain.EstadoPedido;
-import co.edu.usbcali.tiendaapp.dto.EstadoPedidoDTO;
 import co.edu.usbcali.tiendaapp.response.EstadoPedidoResponse;
 import org.mapstruct.Mapper;
 

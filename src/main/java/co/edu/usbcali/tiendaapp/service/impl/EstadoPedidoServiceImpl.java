@@ -1,7 +1,6 @@
 package co.edu.usbcali.tiendaapp.service.impl;
 
 import co.edu.usbcali.tiendaapp.domain.EstadoPedido;
-import co.edu.usbcali.tiendaapp.dto.EstadoPedidoDTO;
 import co.edu.usbcali.tiendaapp.exception.EstadoPedidoException;
 import co.edu.usbcali.tiendaapp.mapper.EstadoPedidoMapper;
 import co.edu.usbcali.tiendaapp.repository.EstadoPedidoRepository;
