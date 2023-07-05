@@ -35,7 +35,7 @@ docker compose up
 ```
 Al ejecutar el script _docker-compose.yml_, se crearón el contenedor de PostgreSQL y otro con PgAdmin como administrador de base de datos.
 
-Para acceder a PgAdmin, debes ingresar a <http://localhost:5050> e ingresar el **username admin@admin.com y password root**.
+Para acceder a PgAdmin, debes ingresar a <http://localhost:5050> e ingresar el username **admin@admin.com** y password **root**.
 
 Como paso siguiente, debes crear un usuario de base de datos. Para ello abre el archivo _user.sql_ o copia las siguientes sentencias y ejecutalas en PgAdmin.
 
