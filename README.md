@@ -37,7 +37,24 @@ Al ejecutar el script _docker-compose.yml_, se creó el contenedor de PostgreSQL
 
 Para acceder a PgAdmin, debes ingresar a <http://localhost:5050> e ingresar el username **admin@admin.com** y password **root**.
 
-Como paso siguiente, debes crear un usuario de base de datos. Para ello abre el archivo _user.sql_ o copia las siguientes sentencias y ejecutalas en PgAdmin.
+Ahora debemos conectarnos a la base de datos postgres. Para ello, damos click derecho en servers y seleccionamos la siguiente opción:
+
+![imagen opcion conexion](/icons/opcion_conexion.png)
+
+Después, procedemos a ingresar la información de la conexión.
+- __Host:__ pg_container (Este es el nombre del contenedor Docker)
+- __Puerto:__ 5432
+- __DB de mantenimiento:__ postgres
+- __Username:__ root
+- __Password:__ root
+
+![imagen opcion conexion](/icons/crear_conexion.png)
+
+Luego, debemos abrir una conexión a la base de datos postgres para ejecutar scripts de creación. Para ello, damos click derecho en postgres y seleccionamos la siguiente opción:
+
+![imagen opcion conexion](/icons/conexion.png)
+
+Como paso siguiente, debes crear un usuario de base de datos. Para ello abre el archivo _user.sql_ o copia las siguientes sentencias y ejecutalas en la conexión creada anteriormente.
 
 ```sql
 CREATE USER tienda_electronica_usb WITH ENCRYPTED PASSWORD 'TIENDA_ELECTRONICA_USB';
