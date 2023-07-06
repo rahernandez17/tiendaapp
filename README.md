@@ -33,7 +33,7 @@ Este proyecto utiliza PostgreSQL 15, y para ello vamos a crear un contenedor en 
 cd scripts
 docker compose up
 ```
-Al ejecutar el script _docker-compose.yml_, se crearón el contenedor de PostgreSQL y otro con PgAdmin como administrador de base de datos.
+Al ejecutar el script _docker-compose.yml_, se creó el contenedor de PostgreSQL y otro contenedor con PgAdmin como administrador de base de datos.
 
 Para acceder a PgAdmin, debes ingresar a <http://localhost:5050> e ingresar el username **admin@admin.com** y password **root**.
 
